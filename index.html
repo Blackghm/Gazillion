@@ -247,140 +247,230 @@ const LEVELS = {
 /* Redaktioneller Demo-Fragenpool: Seltenheit ist geschätzt. */
 const QUESTIONS = [
   {
-    id:"nachbarn",
-    text:"Nenne einen souveränen Staat, der an Deutschland grenzt.",
-    answers:[
-      ["Frankreich",10,[]],
-      ["Österreich",10,["Oesterreich"]],
-      ["Schweiz",25,[]],
-      ["Polen",25,[]],
-      ["Niederlande",25,["Holland"]],
-      ["Dänemark",50,[]],
-      ["Tschechien",50,["Tschechische Republik"]],
-      ["Belgien",75,[]],
-      ["Luxemburg",100,[]]
+    id: "alltag-kuechenwerkzeug",
+    text: "Nenne ein Küchenwerkzeug zum Schälen, Schneiden oder Zerkleinern von Lebensmitteln.",
+    answers: [
+      ["Messer", 10, ["Küchenmesser"]],
+      ["Schere", 10, ["Küchenschere"]],
+      ["Reibe", 25, ["Küchenreibe", "Raspel"]],
+      ["Sparschäler", 25, ["Schäler", "Gemüseschäler"]],
+      ["Mixer", 25, ["Standmixer", "Blender"]],
+      ["Pürierstab", 25, ["Stabmixer"]],
+      ["Knoblauchpresse", 50, []],
+      ["Kartoffelstampfer", 50, []],
+      ["Mörser", 50, ["Moerser"]],
+      ["Gemüsehobel", 50, ["Küchenhobel", "Mandoline"]],
+      ["Eierschneider", 75, []],
+      ["Pizzaschneider", 75, ["Pizzaroller"]],
+      ["Apfelausstecher", 75, ["Apfelentkerner"]],
+      ["Fleischwolf", 75, []],
+      ["Nussknacker", 75, []],
+      ["Zestenreißer", 100, ["Zestenschneider"]],
+      ["Wiegemesser", 100, []],
+      ["Trüffelhobel", 100, []],
+      ["Julienneschneider", 100, ["Julienne-Schneider"]]
     ]
   },
+
   {
-    id:"planeten",
-    text:"Nenne einen der acht Planeten unseres Sonnensystems.",
-    answers:[
-      ["Erde",10,[]],["Mars",10,[]],["Jupiter",25,[]],
-      ["Saturn",25,[]],["Venus",50,[]],["Merkur",75,[]],
-      ["Uranus",75,[]],["Neptun",100,[]]
+    id: "alltag-gefuellter-teig",
+    text: "Nenne ein Gericht oder Gebäck, bei dem eine Füllung von Teig umschlossen ist.",
+    answers: [
+      ["Ravioli", 10, []],
+      ["Tortellini", 10, []],
+      ["Maultaschen", 25, ["Maultasche"]],
+      ["Berliner", 25, ["Berliner Pfannkuchen", "Krapfen"]],
+      ["Apfelstrudel", 25, []],
+      ["Calzone", 25, ["Pizza Calzone"]],
+      ["Frühlingsrolle", 25, ["Frühlingsrollen"]],
+      ["Dampfnudel mit Füllung", 50, ["Gefüllte Dampfnudel"]],
+      ["Germknödel", 50, []],
+      ["Gyoza", 50, []],
+      ["Wan Tan", 50, ["Wantan", "Wonton"]],
+      ["Empanada", 50, ["Empanadas"]],
+      ["Samosa", 75, ["Samosas"]],
+      ["Pelmeni", 75, []],
+      ["Pierogi", 75, ["Piroggen", "Pirogge"]],
+      ["Baozi", 75, ["Bao"]],
+      ["Mochi mit Füllung", 75, ["Daifuku"]],
+      ["Manti", 100, ["Mantı"]],
+      ["Khinkali", 100, ["Chinkali"]],
+      ["Bánh bao", 100, ["Banh bao"]],
+      ["Kärntner Kasnudeln", 100, ["Kärntner Kasnudel"]],
+      ["Schlutzkrapfen", 100, []]
     ]
   },
+
   {
-    id:"bundeslaender",
-    text:"Nenne eines der 16 deutschen Bundesländer.",
-    answers:[
-      ["Bayern",10,[]],["Berlin",10,[]],["Hamburg",25,[]],
-      ["Hessen",25,[]],
-      ["Nordrhein-Westfalen",25,["NRW","Nordrhein Westfalen"]],
-      ["Baden-Württemberg",25,["Baden Württemberg","BW"]],
-      ["Niedersachsen",50,[]],["Sachsen",50,[]],
-      ["Rheinland-Pfalz",50,["Rheinland Pfalz","RLP"]],
-      ["Brandenburg",75,[]],["Bremen",75,[]],["Thüringen",75,[]],
-      ["Schleswig-Holstein",75,["Schleswig Holstein"]],
-      ["Saarland",100,[]],
-      ["Sachsen-Anhalt",100,["Sachsen Anhalt"]],
-      ["Mecklenburg-Vorpommern",100,["Mecklenburg Vorpommern","MV"]]
+    id: "alltag-reissverschluss",
+    text: "Nenne einen Gegenstand, der einen Reißverschluss haben kann.",
+    answers: [
+      ["Jacke", 10, ["Winterjacke", "Regenjacke"]],
+      ["Hose", 10, ["Jeans"]],
+      ["Tasche", 10, ["Handtasche"]],
+      ["Rucksack", 25, []],
+      ["Koffer", 25, ["Reisekoffer", "Rollkoffer"]],
+      ["Pullover", 25, ["Hoodie", "Kapuzenpullover"]],
+      ["Kleid", 25, []],
+      ["Rock", 25, []],
+      ["Stiefel", 50, ["Stiefelette", "Stiefeletten"]],
+      ["Schlafsack", 50, []],
+      ["Zelt", 50, []],
+      ["Bettbezug", 50, ["Bettwäsche", "Deckenbezug"]],
+      ["Kissenbezug", 50, ["Kissenhülle"]],
+      ["Federmäppchen", 50, ["Mäppchen", "Federtasche", "Etui"]],
+      ["Kulturbeutel", 50, ["Waschtasche", "Kulturtasche"]],
+      ["Geldbörse", 50, ["Portemonnaie", "Geldbeutel"]],
+      ["Laptoptasche", 75, ["Laptop-Hülle", "Laptophülle"]],
+      ["Kleidersack", 75, []],
+      ["Matratzenbezug", 75, []],
+      ["Sofabezug", 75, ["Sofakissenbezug"]],
+      ["Neoprenanzug", 100, ["Tauchanzug"]],
+      ["Instrumentenkoffer", 100, ["Gitarrentasche", "Geigenkoffer"]],
+      ["Kompressionsbeutel", 100, []],
+      ["Schutzhülle", 75, []]
     ]
   },
+
   {
-    id:"tierkreis",
-    text:"Nenne eines der zwölf westlichen Tierkreiszeichen.",
-    answers:[
-      ["Widder",25,[]],["Stier",25,[]],["Zwillinge",25,[]],
-      ["Krebs",25,[]],["Löwe",10,[]],["Jungfrau",50,[]],
-      ["Waage",50,[]],["Skorpion",25,[]],["Schütze",75,[]],
-      ["Steinbock",75,[]],["Wassermann",100,[]],["Fische",50,[]]
+    id: "alltag-befestigen",
+    text: "Nenne einen Gegenstand oder ein Material zum Befestigen oder Verbinden.",
+    answers: [
+      ["Schraube", 10, ["Schrauben"]],
+      ["Nagel", 10, ["Nägel"]],
+      ["Kleber", 10, ["Klebstoff"]],
+      ["Klebeband", 10, ["Tesafilm", "Tesa"]],
+      ["Seil", 25, ["Tau"]],
+      ["Schnur", 25, ["Bindfaden"]],
+      ["Kabelbinder", 25, []],
+      ["Heftklammer", 25, ["Tackerklammer"]],
+      ["Büroklammer", 25, []],
+      ["Dübel", 50, []],
+      ["Draht", 50, []],
+      ["Klettband", 50, ["Klettverschluss"]],
+      ["Sicherheitsnadel", 50, []],
+      ["Niete", 75, ["Niet"]],
+      ["Karabiner", 75, ["Karabinerhaken"]],
+      ["Schlauchschelle", 75, []],
+      ["Lüsterklemme", 75, []],
+      ["Schraubzwinge", 75, []],
+      ["Splint", 100, []],
+      ["Sprengring", 100, []],
+      ["Spannstift", 100, []],
+      ["Schäkel", 100, []]
     ]
   },
+
   {
-    id:"elemente",
-    text:"Nenne ein chemisches Element mit Ordnungszahl 1 bis 10.",
-    answers:[
-      ["Wasserstoff",10,["H"]],["Helium",25,["He"]],
-      ["Lithium",50,["Li"]],["Beryllium",100,["Be"]],
-      ["Bor",100,["B"]],["Kohlenstoff",25,["C"]],
-      ["Stickstoff",50,["N"]],["Sauerstoff",10,["O"]],
-      ["Fluor",75,["F"]],["Neon",75,["Ne"]]
+    id: "alltag-duft",
+    text: "Nenne ein Produkt oder einen Gegenstand, mit dem man gezielt einen angenehmen Duft verbreiten kann.",
+    answers: [
+      ["Parfüm", 10, ["Parfum"]],
+      ["Duftkerze", 10, ["Duftkerzen"]],
+      ["Raumspray", 25, ["Lufterfrischerspray"]],
+      ["Deodorant", 25, ["Deo"]],
+      ["Räucherstäbchen", 25, []],
+      ["Duftöl", 50, ["Ätherisches Öl", "Aromaöl"]],
+      ["Duftdiffuser", 50, ["Diffuser", "Aromadiffuser"]],
+      ["Duftstäbchen", 50, ["Raumduftstäbchen"]],
+      ["Duftlampe", 50, ["Aromalampe"]],
+      ["Duftbaum", 50, ["Wunderbaum"]],
+      ["Duftsäckchen", 75, ["Lavendelsäckchen"]],
+      ["Potpourri", 75, ["Duftpotpourri"]],
+      ["Duftstein", 75, []],
+      ["Räucherkegel", 75, ["Räucherkerze"]],
+      ["Duftwachs", 75, ["Wax Melt", "Duftmelts"]],
+      ["Räucherharz", 100, ["Weihrauch"]],
+      ["Räucherhölzchen", 100, ["Palo Santo"]],
+      ["Duftpapier", 100, ["Armenisches Papier", "Papier d'Arménie"]]
     ]
   },
+
   {
-    id:"un",
-    text:"Nenne eine der sechs offiziellen Amtssprachen der Vereinten Nationen.",
-    answers:[
-      ["Englisch",10,[]],["Französisch",25,[]],
-      ["Spanisch",25,[]],["Russisch",75,[]],
-      ["Arabisch",100,[]],["Chinesisch",50,["Mandarin","Hochchinesisch"]]
+    id: "alltag-aufpumpen",
+    text: "Nenne einen Gegenstand, den man mit Luft aufpumpen kann.",
+    answers: [
+      ["Fahrradreifen", 10, ["Fahrradschlauch"]],
+      ["Autoreifen", 10, []],
+      ["Fußball", 10, []],
+      ["Luftmatratze", 25, []],
+      ["Luftballon", 25, ["Ballon"]],
+      ["Basketball", 25, []],
+      ["Volleyball", 25, []],
+      ["Handball", 25, []],
+      ["Schlauchboot", 50, []],
+      ["Schwimmring", 50, ["Schwimmreifen"]],
+      ["Schwimmflügel", 50, []],
+      ["Gymnastikball", 50, ["Pezziball", "Sitzball"]],
+      ["Planschbecken", 50, ["Aufblasbarer Pool"]],
+      ["Luftbett", 50, []],
+      ["SUP-Board", 75, ["SUP", "Aufblasbares SUP"]],
+      ["Nackenkissen", 75, ["Aufblasbares Nackenkissen"]],
+      ["Luftsofa", 75, ["Aufblasbares Sofa"]],
+      ["Hüpfburg", 75, []],
+      ["Aufblasbares Kajak", 100, ["Luftkajak"]],
+      ["Luftvorzelt", 100, ["Aufblasbares Vorzelt"]],
+      ["Luftzelt", 100, ["Aufblasbares Zelt"]],
+      ["Balancekissen", 100, ["Wackelkissen", "Sitzkissen mit Luft"]]
     ]
   },
+
   {
-    id:"koerper",
-    text:"Nenne einen der fünf platonischen Körper.",
-    answers:[
-      ["Tetraeder",25,[]],["Hexaeder",10,["Würfel","Kubus"]],
-      ["Oktaeder",50,[]],["Dodekaeder",75,[]],["Ikosaeder",100,[]]
+    id: "alltag-fermentiert",
+    text: "Nenne ein Lebensmittel oder Getränk, das durch Fermentation hergestellt wird.",
+    answers: [
+      ["Joghurt", 10, ["Jogurt"]],
+      ["Bier", 10, []],
+      ["Wein", 10, []],
+      ["Käse", 25, ["Kaese"]],
+      ["Sauerkraut", 25, []],
+      ["Sauerteigbrot", 25, ["Sauerteig"]],
+      ["Essig", 25, []],
+      ["Sojasauce", 50, ["Sojasoße"]],
+      ["Kefir", 50, []],
+      ["Kimchi", 50, []],
+      ["Kombucha", 50, []],
+      ["Buttermilch", 50, []],
+      ["Salami", 50, []],
+      ["Miso", 75, ["Misopaste"]],
+      ["Tempeh", 75, []],
+      ["Skyr", 75, []],
+      ["Crème fraîche", 75, ["Creme fraiche"]],
+      ["Natto", 100, ["Nattō"]],
+      ["Wasserkefir", 100, []],
+      ["Kwas", 100, ["Kwass", "Kvass"]],
+      ["Garum", 100, []],
+      ["Doenjang", 100, []]
     ]
   },
+
   {
-    id:"dna",
-    text:"Nenne eine der vier üblichen Basen der DNA.",
-    answers:[
-      ["Adenin",25,["A"]],["Thymin",50,["T"]],
-      ["Guanin",75,["G"]],["Cytosin",100,["C","Zytosin"]]
+    id: "alltag-backen",
+    text: "Nenne ein Werkzeug oder Hilfsmittel zum Formen oder Verzieren von Gebäck.",
+    answers: [
+      ["Ausstechform", 10, ["Plätzchenausstecher", "Ausstecher"]],
+      ["Nudelholz", 10, ["Teigrolle", "Wellholz"]],
+      ["Backform", 25, []],
+      ["Springform", 25, []],
+      ["Spritzbeutel", 25, ["Spritzsack"]],
+      ["Backpinsel", 25, ["Kuchenpinsel"]],
+      ["Muffinform", 25, ["Muffinblech"]],
+      ["Tortenring", 50, []],
+      ["Spritztülle", 50, ["Tülle"]],
+      ["Teigschaber", 50, []],
+      ["Palette", 50, ["Backpalette", "Winkelpalette"]],
+      ["Keksstempel", 75, ["Plätzchenstempel"]],
+      ["Teigkarte", 75, []],
+      ["Fondantglätter", 75, []],
+      ["Teigrädchen", 75, ["Teigrad"]],
+      ["Prägerolle", 100, ["Präge-Nudelholz"]],
+      ["Modellierwerkzeug", 100, ["Fondantwerkzeug"]],
+      ["Tortenkamm", 100, ["Dekorkamm"]],
+      ["Blütentülle", 100, []],
+      ["Schablone", 75, ["Backschablone", "Tortenschablone"]]
     ]
-  },
-  {
-    id:"monde",
-    text:"Nenne einen der vier Galileischen Monde des Jupiter.",
-    answers:[
-      ["Io",25,[]],["Europa",10,[]],
-      ["Ganymed",75,["Ganymedes"]],["Kallisto",100,["Callisto"]]
-    ]
-  },
-  {
-    id:"baltikum",
-    text:"Nenne einen der drei baltischen Staaten.",
-    answers:[["Estland",25,[]],["Lettland",75,[]],["Litauen",100,[]]]
-  },
-  {
-    id:"seen",
-    text:"Nenne einen der fünf Großen Seen Nordamerikas.",
-    answers:[
-      ["Oberer See",100,["Lake Superior","Superior"]],
-      ["Michigansee",25,["Lake Michigan","Michigan"]],
-      ["Huronsee",75,["Lake Huron","Huron"]],
-      ["Eriesee",50,["Lake Erie","Erie"]],
-      ["Ontariosee",25,["Lake Ontario","Ontario"]]
-    ]
-  },
-  {
-    id:"tennis",
-    text:"Nenne einen der vier Grand-Slam-Tenniswettbewerbe.",
-    answers:[
-      ["Australian Open",50,[]],["French Open",75,["Roland Garros"]],
-      ["Wimbledon",10,["The Championships"]],
-      ["US Open",100,["U.S. Open","US-Open"]]
-    ]
-  },
-  {
-    id:"schweiz",
-    text:"Nenne einen souveränen Staat, der an die Schweiz grenzt.",
-    answers:[
-      ["Deutschland",10,[]],["Frankreich",25,[]],
-      ["Italien",25,[]],["Österreich",75,[]],["Liechtenstein",100,[]]
-    ]
-  },
-  {
-    id:"skandinavien",
-    text:"Nenne eines der drei skandinavischen Länder im engeren geografischen Sinn.",
-    answers:[["Schweden",10,[]],["Norwegen",50,[]],["Dänemark",100,[]]]
   }
 ];
-
 const app = document.getElementById("app");
 let view = "home";
 let selectedDate = null;
