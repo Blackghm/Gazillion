@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+  <meta
+    name="description"
+    content="Selten: Fünf tägliche Wissensfragen. Ungewöhnliche richtige Antworten bringen mehr Punkte."
+  >
+  <title>Selten – das tägliche Quiz</title>
+
+  <style>
+    :root {
+      --background: #f6f5ef;
+      --surface: #ffffff;
+      --text: #203530;
+      --muted: #66756e;
+      --primary: #216c58;
+      --primary-dark: #164d3f;
+      --accent: #e7ab66;
+      --border: #dfe5dc;
+      --success: #e5f2e9;
+      --error: #fff0e9;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: default;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    a:focus-visible,
+    summary:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 4px;
+    }
+
+    header {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 25px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      padding: 0;
+      font-size: 34px;
+      font-weight: 850;
+      letter-spacing: -2px;
+    }
+
+    .brand span {
+      color: var(--accent);
+    }
+
+    nav {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .nav-button {
+      background: transparent;
+      border: 0;
+      padding: 6px 0;
+      color: var(--primary);
+      font-size: 14px;
+    }
+
+    main {
+      max-width: 740px;
+      margin: 32px auto 70px;
+      padding: 0 24px;
+    }
+
+    h1 {
+      font-size: clamp(38px, 8vw, 65px);
+      line-height: 1.08;
+      letter-spacing: -2px;
+      margin: 18px 0 24px;
+    }
+
+    h2 {
+      font-size: 23px;
+      line-height: 1.3;
+    }
+
+    h3 {
+      font-size: 18px;
+    }
+
+    p {
+      margin: 12px 0;
+    }
+
+    .eyebrow {
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .intro {
+      max-width: 580px;
+      font-size: 20px;
+      color: var(--muted);
+    }
+
+    .card {
+      margin: 22px 0;
+      padding: 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: 0 8px 25px rgba(30, 55, 40, 0.025);
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin: 22px 0;
+    }
+
+    .chip {
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
+    .primary,
+    .secondary {
+      display: inline-block;
+      padding: 13px 20px;
+      border-radius: 11px;
+      font-weight: 650;
+      margin: 8px 6px 8px 0;
+    }
+
+    .primary {
+      border: 1px solid var(--primary);
+      background: var(--primary);
+      color: white;
+    }
+
+    .primary:hover:not(:disabled) {
+      background: var(--primary-dark);
+    }
+
+    .secondary {
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--primary);
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .small {
+      font-size: 13px;
+    }
+
+    .notice {
+      padding: 16px 18px;
+      border-radius: 12px;
+      background: #fff3dc;
+      font-size: 14px;
+    }
+
+    label {
+      display: block;
+      font-weight: 650;
+      margin-top: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      margin: 8px 0 12px;
+      border: 1px solid #95a69b;
+      border-radius: 11px;
+      background: white;
+      color: var(--text);
+    }
+
+    .question-title {
+      font-size: clamp(28px, 5vw, 39px);
+      letter-spacing: -1px;
+      line-height: 1.2;
+    }
+
+    progress {
+      width: 100%;
+      height: 9px;
+      accent-color: var(--primary);
+    }
+
+    .score {
+      font-size: 76px;
+      font-weight: 800;
+      letter-spacing: -4px;
+      line-height: 1;
+      margin-top: 20px;
+    }
+
+    .score small {
+      font-size: 23px;
+      font-weight: 500;
+      letter-spacing: 0;
+      color: var(--muted);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 24px 0;
+    }
+
+    .stat {
+      text-align: center;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 18px 10px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 28px;
+    }
+
+    .stat span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .result-row {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .result-row:last-child {
+      border-bottom: 0;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      background: var(--success);
+      margin-top: 6px;
+    }
+
+    .badge.invalid {
+      background: var(--error);
+    }
+
+    .countdown {
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    td,
+    th {
+      padding: 12px 8px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    details {
+      margin: 18px 0;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 650;
+    }
+
+    footer {
+      max-width: 740px;
+      margin: auto;
+      padding: 20px 24px 35px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: max-content;
+      max-width: calc(100% - 32px);
+      background: var(--text);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 12px;
+      z-index: 10;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    @media (max-width: 520px) {
+      header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      main {
+        margin-top: 20px;
+      }
+
+      .card {
+        padding: 22px;
+      }
+
+      .stats {
+        gap: 8px;
+      }
+
+      .stat {
+        padding: 14px 5px;
+      }
+
+      .stat strong {
+        font-size: 23px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <button class="brand" data-view="home" aria-label="Zur Startseite">
+      selten<span>.</span>
+    </button>
+
+    <nav aria-label="Hauptnavigation">
+      <button class="nav-button" data-view="home">Heute</button>
+      <button class="nav-button" data-view="stats">Meine Statistik</button>
+      <button class="nav-button" data-view="rules">Spielregeln</button>
+    </nav>
+  </header>
+
+  <main id="app"></main>
+
+  <footer>
+    Lokaler Prototyp: Ergebnisse werden nur in diesem Browser gespeichert.
+    Kein Konto erforderlich. Keine globale Rangliste.
+  </footer>
+
+  <div id="toast" role="status" hidden></div>
+
+  <script>
+    "use strict";
+
+    /*
+      SELTEN – EIN-DATEI-PROTOTYP
+
+      Kein Server, keine Datenbank, keine externen Bibliotheken.
+
+      Einschränkungen:
+      - Antworten und Punkte sind im Quellcode einsehbar.
+      - localStorage ist keine sichere Teilnahmebegrenzung.
+      - Browserdaten können gelöscht oder verändert werden.
+      - Kein geräteübergreifendes Konto.
+      - Keine globale Rangliste.
+      - Seltenheit ist redaktionell eingeschätzt.
+    */
+
+    const STORAGE_KEY = "selten-local-v1";
+
+    const LEVELS = {
+      0: "Nicht erkannt",
+      10: "Häufig",
+      25: "Bekannt",
+      50: "Ungewöhnlich",
+      75: "Selten",
+      100: "Sehr selten"
+    };
+
+    /*
+      Jede Antwort:
+      [Bezeichnung, Punkte, akzeptierte weitere Schreibweisen]
+    */
+    const QUESTIONS = [
+      {
+        id: "germany-neighbours",
+        text: "Nenne einen souveränen Staat, der an Deutschland grenzt.",
+        answers: [
+          ["Frankreich", 10, []],
+          ["Österreich", 10, ["Oesterreich"]],
+          ["Schweiz", 25, []],
+          ["Polen", 25, []],
+          ["Niederlande", 25, ["Holland"]],
+          ["Dänemark", 50, []],
+          ["Tschechien", 50, ["Tschechische Republik"]],
+          ["Belgien", 75, []],
+          ["Luxemburg", 100, []]
+        ]
+      },
+      {
+        id: "planets",
+        text: "Nenne einen der acht Planeten unseres Sonnensystems.",
+        answers: [
+          ["Erde", 10, []],
+          ["Mars", 10, []],
+          ["Jupiter", 25, []],
+          ["Saturn", 25, []],
+          ["Venus", 50, []],
+          ["Merkur", 75, []],
+          ["Uranus", 75, []],
+          ["Neptun", 100, []]
+        ]
+      },
+      {
+        id: "german-states",
+        text: "Nenne eines der 16 deutschen Bundesländer.",
+        answers: [
+          ["Bayern", 10, []],
+          ["Berlin", 10, []],
+          ["Hamburg", 25, []],
+          ["Hessen", 25, []],
+          ["Nordrhein-Westfalen", 25, ["NRW", "Nordrhein Westfalen"]],
+          ["Baden-Württemberg", 25, ["Baden Württemberg", "BW"]],
+          ["Niedersachsen", 50, []],
+          ["Sachsen", 50, []],
+          ["Rheinland-Pfalz", 50, ["Rheinland Pfalz", "RLP"]],
+          ["Brandenburg", 75, []],
+          ["Bremen", 75, []],
+          ["Thüringen", 75, []],
+          ["Schleswig-Holstein", 75, ["Schleswig Holstein"]],
+          ["Saarland", 100, []],
+          ["Sachsen-Anhalt", 100, ["Sachsen Anhalt"]],
+          [
+            "Mecklenburg-Vorpommern",
+            100,
+            ["Mecklenburg Vorpommern", "MV"]
+          ]
+        ]
+      },
+      {
+        id: "zodiac",
+        text: "Nenne eines der zwölf westlichen Tierkreiszeichen.",
+        answers: [
+          ["Widder", 25, []],
+          ["Stier", 25, []],
+          ["Zwillinge", 25, []],
+          ["Krebs", 25, []],
+          ["Löwe", 10, []],
+          ["Jungfrau", 50, []],
+          ["Waage", 50, []],
+          ["Skorpion", 25, []],
+          ["Schütze", 75, []],
+          ["Steinbock", 75, []],
+          ["Wassermann", 100, []],
+          ["Fische", 50, []]
+        ]
+      },
+      {
+        id: "elements-ten",
+        text: "Nenne ein chemisches Element mit Ordnungszahl 1 bis 10.",
+        answers: [
+          ["Wasserstoff", 10, ["H"]],
+          ["Helium", 25, ["He"]],
+          ["Lithium", 50, ["Li"]],
+          ["Beryllium", 100, ["Be"]],
+          ["Bor", 100, ["B"]],
+          ["Kohlenstoff", 25, ["C"]],
+          ["Stickstoff", 50, ["N"]],
+          ["Sauerstoff", 10, ["O"]],
+          ["Fluor", 75, ["F"]],
+          ["Neon", 75, ["Ne"]]
+        ]
+      },
+      {
+        id: "un-languages",
+        text: "Nenne eine der sechs offiziellen Amtssprachen der Vereinten Nationen.",
+        answers: [
+          ["Englisch", 10, []],
+          ["Französisch", 25, []],
+          ["Spanisch", 25, []],
+          ["Russisch", 75, []],
+          ["Arabisch", 100, []],
+          ["Chinesisch", 50, ["Mandarin", "Hochchinesisch"]]
+        ]
+      },
+      {
+        id: "platonic",
+        text: "Nenne einen der fünf platonischen Körper.",
+        answers: [
+          ["Tetraeder", 25, []],
+          ["Hexaeder", 10, ["Würfel", "Kubus"]],
+          ["Oktaeder", 50, []],
+          ["Dodekaeder", 75, []],
+          ["Ikosaeder", 100, []]
+        ]
+      },
+      {
+        id: "dna",
+        text: "Nenne eine der vier üblichen Basen der DNA.",
+        answers: [
+          ["Adenin", 25, ["A"]],
+          ["Thymin", 50, ["T"]],
+          ["Guanin", 75, ["G"]],
+          ["Cytosin", 100, ["C", "Zytosin"]]
+        ]
+      },
+      {
+        id: "jupiter-moons",
+        text: "Nenne einen der vier Galileischen Monde des Jupiter.",
+        answers: [
+          ["Io", 25, []],
+          ["Europa", 10, []],
+          ["Ganymed", 75, ["Ganymedes"]],
+          ["Kallisto", 100, ["Callisto"]]
+        ]
+      },
+      {
+        id: "baltic",
+        text: "Nenne einen der drei baltischen Staaten.",
+        answers: [
+          ["Estland", 25, []],
+          ["Lettland", 75, []],
+          ["Litauen", 100, []]
+        ]
+      },
+      {
+        id: "great-lakes",
+        text: "Nenne einen der fünf Großen Seen Nordamerikas.",
+        answers: [
+          ["Oberer See", 100, ["Lake Superior", "Superior"]],
+          ["Michigansee", 25, ["Lake Michigan", "Michigan"]],
+          ["Huronsee", 75, ["Lake Huron", "Huron"]],
+          ["Eriesee", 50, ["Lake Erie", "Erie"]],
+          ["Ontariosee", 25, ["Lake Ontario", "Ontario"]]
+        ]
+      },
+      {
+        id: "tennis",
+        text: "Nenne einen der vier Grand-Slam-Tenniswettbewerbe.",
+        answers: [
+          ["Australian Open", 50, []],
+          ["French Open", 75, ["Roland Garros"]],
+          ["Wimbledon", 10, ["The Championships"]],
+          ["US Open", 100, ["U.S. Open", "US-Open"]]
+        ]
+      },
+      {
+        id: "switzerland-neighbours",
+        text: "Nenne einen souveränen Staat, der an die Schweiz grenzt.",
+        answers: [
+          ["Deutschland", 10, []],
+          ["Frankreich", 25, []],
+          ["Italien", 25, []],
+          ["Österreich", 75, []],
+          ["Liechtenstein", 100, []]
+        ]
+      },
+      {
+        id: "scandinavia",
+        text: "Nenne eines der drei skandinavischen Länder im engeren geografischen Sinn.",
+        answers: [
+          ["Schweden", 10, []],
+          ["Norwegen", 50, []],
+          ["Dänemark", 100, []]
+        ]
+      }
+    ];
+
+    const app = document.getElementById("app");
+
+    let currentView = "home";
+    let storageAvailable = true;
+    let busy = false;
+    let toastTimer;
+
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[character]);
+    }
+
+    function normalize(value) {
+      return String(value)
+        .normalize("NFKC")
+        .toLocaleLowerCase("de-DE")
+        .replaceAll("ä", "ae")
+        .replaceAll("ö", "oe")
+        .replaceAll("ü", "ue")
+        .replaceAll("ß", "ss")
+        .replace(/[‐‑–—]/g, "-")
+        .trim()
+        .replace(/\s+/g, " ");
+    }
+
+    function berlinDate(now = new Date()) {
+      const parts = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Europe/Berlin",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).formatToParts(now);
+
+      const get = type => parts.find(part => part.type === type).value;
+
+      return `${get("year")}-${get("month")}-${get("day")}`;
+    }
+
+    function dateNumber(key) {
+      const [year, month, day] = key.split("-").map(Number);
+      return Math.floor(Date.UTC(year, month - 1, day) / 86400000);
+    }
+
+    function previousDate(key) {
+      return new Date(
+        (dateNumber(key) - 1) * 86400000
+      ).toISOString().slice(0, 10);
+    }
+
+    function displayDate(key) {
+      return new Intl.DateTimeFormat("de-DE", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        timeZone: "UTC"
+      }).format(new Date(`${key}T12:00:00Z`));
+    }
+
+    function newState() {
+      return {
+        version: 1,
+        days: {}
+      };
+    }
+
+    function readState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+
+        if (!raw) return newState();
+
+        const parsed = JSON.parse(raw);
+
+        if (
+          parsed.version !== 1 ||
+          !parsed.days ||
+          typeof parsed.days !== "object"
+        ) {
+          throw new Error("Ungültiger Speicherstand");
+        }
+
+        return parsed;
+      } catch (error) {
+        storageAvailable = false;
+        return newState();
+      }
+    }
+
+    let state = readState();
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        return true;
+      } catch (error) {
+        storageAvailable = false;
+
+        toast(
+          "Speichern nicht möglich. Bitte erlaube lokalen Browserspeicher."
+        );
+
+        return false;
+      }
+    }
+
+    function toast(message) {
+      const element = document.getElementById("toast");
+
+      element.textContent = message;
+      element.hidden = false;
+
+      clearTimeout(toastTimer);
+
+      toastTimer = setTimeout(() => {
+        element.hidden = true;
+      }, 5000);
+    }
+
+    /*
+      Tagesauswahl ist für dasselbe Datum überall identisch.
+      Kleiner Fragenpool: Kategorien wiederholen sich.
+    */
+    function dailyQuestions(key) {
+      const pool = [...QUESTIONS];
+      let seed = dateNumber(key) >>> 0;
+
+      function random() {
+        seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+        return seed / 4294967296;
+      }
+
+      for (let index = pool.length - 1; index > 0; index--) {
+        const target = Math.floor(random() * (index + 1));
+
+        [pool[index], pool[target]] = [
+          pool[target],
+          pool[index]
+        ];
+      }
+
+      return pool.slice(0, 5);
+    }
+
+    function scoreAnswer(question, raw) {
+      const input = normalize(raw);
+
+      if (!input) {
+        return {
+          raw: "",
+          canonical: "",
+          points: 0
+        };
+      }
+
+      const match = question.answers.find(answer => {
+        const variants = [answer[0], ...answer[2]];
+
+        return variants.some(variant => normalize(variant) === input);
+      });
+
+      return {
+        raw,
+        canonical: match ? match[0] : "",
+        points: match ? match[1] : 0
+      };
+    }
+
+    function totalScore(day) {
+      return day.answers.reduce(
+        (total, answer) => total + answer.points,
+        0
+      );
+    }
+
+    function closeExpired() {
+      const today = berlinDate();
+      let changed = false;
+
+      for (const [key, day] of Object.entries(state.days)) {
+        if (key < today && !day.finished) {
+          day.finished = true;
+          day.expired = true;
+          changed = true;
+        }
+      }
+
+      if (changed) saveState();
+    }
+
+    function completedEntries() {
+      return Object.entries(state.days)
+        .filter(([, day]) => day.finished)
+        .sort(([first], [second]) => second.localeCompare(first));
+    }
+
+    function calculateStats() {
+      const completed = completedEntries();
+      const scores = completed.map(([, day]) => totalScore(day));
+
+      let cursor = berlinDate();
+
+      if (!state.days[cursor]?.finished) {
+        cursor = previousDate(cursor);
+      }
+
+      let streak = 0;
+
+      while (state.days[cursor]?.finished) {
+        streak++;
+        cursor = previousDate(cursor);
+      }
+
+      return {
+        played: completed.length,
+        best: scores.length ? Math.max(...scores) : 0,
+        average: scores.length
+          ? Math.round(
+              scores.reduce((sum, score) => sum + score, 0) /
+              scores.length
+            )
+          : 0,
+        streak
+      };
+    }
+
+    function changeView(view) {
+      currentView = view;
+      render();
+      window.scrollTo({ top: 0 });
+    }
+
+    function renderHome() {
+      const key = berlinDate();
+      const day = state.days[key];
+      const stats = calculateStats();
+
+      let action;
+
+      if (!storageAvailable) {
+        action = `
+          <p class="notice">
+            Der lokale Speicher ist nicht verfügbar.
+            Bitte erlaube Browserspeicher und lade die Seite neu.
+          </p>
+        `;
+      } else if (day?.finished) {
+        action = `
+          <button class="primary" data-action="today-result">
+            Heutiges Ergebnis ansehen
+          </button>
+        `;
+      } else if (day) {
+        action = `
+          <button class="primary" data-action="continue">
+            Runde fortsetzen
+          </button>
+        `;
+      } else {
+        action = `
+          <p class="muted">
+            Jede abgegebene Antwort ist endgültig.
+            Leer abgeben bedeutet überspringen.
+          </p>
+          <button class="primary" data-action="start">
+            Heutiges Spiel starten
+          </button>
+        `;
+      }
+
+      app.innerHTML = `
+        <p class="eyebrow">Das tägliche Wissensspiel</p>
+
+        <h1>Richtig ist gut.<br>Selten ist besser.</h1>
+
+        <p class="intro">
+          Finde richtige Antworten, auf die nicht jeder kommt.
+          Je ungewöhnlicher die Antwort, desto mehr Punkte.
+        </p>
+
+        <div class="chips">
+          <span class="chip">5 Fragen</span>
+          <span class="chip">Max. 500 Punkte</span>
+          <span class="chip">Ohne Anmeldung</span>
+          <span class="chip">Ohne Zeitlimit</span>
+        </div>
+
+        <section class="card">
+          <p class="eyebrow">${escapeHTML(displayDate(key))}</p>
+          <h2>Deine heutige Runde</h2>
+          ${action}
+        </section>
+
+        <div class="stats">
+          <div class="stat">
+            <strong>${stats.streak}</strong>
+            <span>Tage in Serie</span>
+          </div>
+          <div class="stat">
+            <strong>${stats.played}</strong>
+            <span>Runden gespielt</span>
+          </div>
+          <div class="stat">
+            <strong>${stats.best}</strong>
+            <span>Persönlicher Rekord</span>
+          </div>
+        </div>
+
+        <p class="muted">
+          Nächste Tagesrunde in
+          <span class="countdown" data-countdown>–</span>.
+        </p>
+
+        <p class="notice">
