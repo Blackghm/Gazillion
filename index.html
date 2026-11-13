@@ -943,4 +943,610 @@
           <span class="countdown" data-countdown>–</span>.
         </p>
 
-        <p class="notice">
+                <p class="notice">
+          Diese erste Version speichert nur in deinem Browser.
+          Globale Rangliste und freiwillige Onlinekonten
+          sind noch nicht verbunden.
+        </p>
+      `;
+    }
+
+    function startGame() {
+      if (!storageAvailable) {
+        toast("Bitte aktiviere zuerst den lokalen Browserspeicher.");
+        return;
+      }
+
+      const key = berlinDate();
+
+      if (!state.days[key]) {
+        state.days[key] = {
+          questions: dailyQuestions(key),
+          answers: [],
+          finished: false,
+          expired: false
+        };
+
+        if (!saveState()) {
+          delete state.days[key];
+          render();
+          return;
+        }
+      }
+
+      resultDate = null;
+      changeView(state.days[key].finished ? "result" : "play");
+    }
+
+    function renderPlay() {
+      const key = berlinDate();
+      const day = state.days[key];
+
+      if (!day) {
+        currentView = "home";
+        renderHome();
+        return;
+      }
+
+      if (day.finished) {
+        renderResult(key);
+        return;
+      }
+
+      const index = day.answers.length;
+      const question = day.questions[index];
+
+      app.innerHTML = `
+        <p class="eyebrow">Frage ${index + 1} von 5</p>
+
+        <progress
+          value="${index}"
+          max="5"
+          aria-label="${index} von 5 Antworten abgegeben"
+        ></progress>
+
+        <section class="card">
+          <h1 class="question-title">
+            ${escapeHTML(question.text)}
+          </h1>
+
+          <p class="muted">
+            Gib genau eine Antwort ein.
+            Ungewöhnliche richtige Antworten bringen mehr Punkte.
+          </p>
+
+          <form id="answer-form">
+            <label for="answer">Deine Antwort</label>
+
+            <input
+              id="answer"
+              name="answer"
+              type="text"
+              maxlength="120"
+              autocomplete="off"
+              spellcheck="false"
+            >
+
+            <button class="primary" type="submit">
+              Verbindlich abgeben
+            </button>
+
+            <p class="muted">
+              Leer abgeben = überspringen, 0 Punkte.
+              Deine Antwort kann danach nicht geändert werden.
+            </p>
+          </form>
+        </section>
+
+        <p class="muted">
+          Deine bisherigen Antworten sind gespeichert.
+          Du kannst die Runde heute später fortsetzen.
+        </p>
+      `;
+
+      document.getElementById("answer-form").addEventListener(
+        "submit",
+        event => submitAnswer(event, key, index)
+      );
+
+      document.getElementById("answer").focus();
+    }
+
+    function submitAnswer(event, expectedDay, expectedIndex) {
+      event.preventDefault();
+
+      if (busy) return;
+
+      if (berlinDate() !== expectedDay) {
+        closeExpired();
+        changeView("home");
+        toast("Ein neuer Spieltag hat begonnen.");
+        return;
+      }
+
+      const latest = readState();
+
+      if (!storageAvailable) {
+        toast("Der Speicher ist nicht verfügbar.");
+        return;
+      }
+
+      state = latest;
+
+      const day = state.days[expectedDay];
+
+      if (
+        !day ||
+        day.finished ||
+        day.answers.length !== expectedIndex
+      ) {
+        render();
+        toast("Der Spielstand wurde in einem anderen Tab geändert.");
+        return;
+      }
+
+      const input = document.getElementById("answer");
+      const raw = input.value.trim().slice(0, 120);
+
+      if (
+        !raw &&
+        !window.confirm("Diese Frage ohne Antwort überspringen?")
+      ) {
+        input.focus();
+        return;
+      }
+
+      busy = true;
+
+      const question = day.questions[expectedIndex];
+      const response = scoreAnswer(question, raw);
+
+      day.answers.push(response);
+      day.finished = day.answers.length === 5;
+
+      const success = saveState();
+
+      busy = false;
+
+      if (!success) {
+        day.answers.pop();
+        day.finished = false;
+        return;
+      }
+
+      resultDate = expectedDay;
+      changeView(day.finished ? "result" : "play");
+    }
+
+    let resultDate = null;
+
+    function renderResult(key = resultDate || berlinDate()) {
+      const day = state.days[key];
+
+      if (!day || !day.finished) {
+        currentView = "home";
+        renderHome();
+        return;
+      }
+
+      resultDate = key;
+
+      const total = totalScore(day);
+
+      const correct = day.answers.filter(
+        answer => Boolean(answer.canonical)
+      ).length;
+
+      let headline = "Jede Runde macht dich erfahrener.";
+
+      if (total >= 400) {
+        headline = "Ein außergewöhnlich seltenes Ergebnis.";
+      } else if (total >= 300) {
+        headline = "Du denkst abseits der üblichen Antworten.";
+      } else if (total >= 200) {
+        headline = "Einige richtig gute Fundstücke.";
+      } else if (total >= 100) {
+        headline = "Solider Start. Morgen geht noch mehr.";
+      }
+
+      const rows = day.questions.map((question, index) => {
+        const answer = day.answers[index] || {
+          raw: "",
+          canonical: "",
+          points: 0
+        };
+
+        const level = answer.canonical
+          ? LEVELS[answer.points]
+          : answer.raw
+            ? "Nicht erkannt"
+            : "Übersprungen";
+
+        return `
+          <article class="result-row">
+            <p class="eyebrow">Frage ${index + 1}</p>
+
+            <h3>${escapeHTML(question.text)}</h3>
+
+            <p>
+              Deine Antwort:
+              <strong>
+                ${escapeHTML(answer.raw || "Übersprungen")}
+              </strong>
+            </p>
+
+            <span class="badge ${answer.canonical ? "" : "invalid"}">
+              ${answer.points} Punkte · ${escapeHTML(level)}
+            </span>
+
+            ${
+              answer.canonical
+                ? `<p class="muted">
+                    Gewertet als: ${escapeHTML(answer.canonical)}
+                   </p>`
+                : ""
+            }
+          </article>
+        `;
+      }).join("");
+
+      app.innerHTML = `
+        <p class="eyebrow">
+          Dein Ergebnis · ${escapeHTML(displayDate(key))}
+        </p>
+
+        <div class="score">
+          ${total}<small> / 500</small>
+        </div>
+
+        <h2>${escapeHTML(headline)}</h2>
+
+        <p>${correct} von 5 Fragen richtig beantwortet.</p>
+
+        ${
+          day.expired
+            ? `<p class="notice">
+                Die Runde endete am Tageswechsel.
+                Fehlende Antworten zählen als 0 Punkte.
+               </p>`
+            : ""
+        }
+
+        <button class="primary" data-action="share">
+          Ergebnis kopieren
+        </button>
+
+        <button class="secondary" data-view="stats">
+          Meine Statistik
+        </button>
+
+        <section class="card">
+          ${rows}
+        </section>
+
+        <section class="card">
+          <h2>Vergleich mit anderen</h2>
+          <p>
+            Noch nicht verfügbar: Diese Ein-Datei-Version
+            hat keine gemeinsame Spielerdatenbank.
+          </p>
+          <p class="muted">
+            Es werden keine Teilnehmerzahlen,
+            Antwortquoten oder Rangplätze erfunden.
+          </p>
+        </section>
+
+        <p class="muted">
+          Neue Runde in
+          <span class="countdown" data-countdown>–</span>.
+        </p>
+      `;
+    }
+
+    function renderStats() {
+      const stats = calculateStats();
+      const entries = completedEntries();
+
+      const rows = entries.map(([key, day]) => `
+        <tr>
+          <td>${escapeHTML(displayDate(key))}</td>
+          <td>${totalScore(day)} / 500</td>
+          <td>
+            <button
+              class="nav-button"
+              data-result="${escapeHTML(key)}"
+            >
+              Ansehen
+            </button>
+          </td>
+        </tr>
+      `).join("");
+
+      app.innerHTML = `
+        <p class="eyebrow">Nur in diesem Browser</p>
+        <h1>Deine Statistik.</h1>
+
+        <div class="stats">
+          <div class="stat">
+            <strong>${stats.streak}</strong>
+            <span>Tage in Serie</span>
+          </div>
+          <div class="stat">
+            <strong>${stats.best}</strong>
+            <span>Beste Punktzahl</span>
+          </div>
+          <div class="stat">
+            <strong>${stats.average}</strong>
+            <span>Durchschnitt</span>
+          </div>
+        </div>
+
+        <section class="card">
+          <h2>Vergangene Runden</h2>
+
+          ${
+            entries.length
+              ? `<table>
+                  <thead>
+                    <tr>
+                      <th>Datum</th>
+                      <th>Punkte</th>
+                      <th>Ergebnis</th>
+                    </tr>
+                  </thead>
+                  <tbody>${rows}</tbody>
+                 </table>`
+              : "<p>Du hast noch keine Tagesrunde abgeschlossen.</p>"
+          }
+        </section>
+
+        <p class="muted">
+          Eine Serie zählt aufeinanderfolgende Tage mit einer
+          abgeschlossenen Runde. Auch 0 Punkte zählen.
+          Ein angefangener Versuch wird nach Tagesende abgeschlossen.
+        </p>
+
+        <section class="card">
+          <h2>Freiwilliges Onlinekonto</h2>
+          <p>
+            In dieser Version noch nicht verfügbar.
+            Deine Statistik wird automatisch lokal gespeichert.
+          </p>
+          <p class="muted">
+            Geräteübergreifende Konten benötigen einen
+            zusätzlich angebundenen Server oder Datenbankdienst.
+          </p>
+        </section>
+      `;
+    }
+
+    function renderRules() {
+      app.innerHTML = `
+        <p class="eyebrow">Kurz erklärt</p>
+        <h1>So spielst du.</h1>
+
+        <section class="card">
+          <h2>Fünf Fragen pro Tag</h2>
+          <p>
+            Alle Spieler erhalten für dasselbe Berliner Datum
+            dieselben fünf Fragen. Pro Frage zählt eine Antwort.
+          </p>
+
+          <h2>Richtig und ungewöhnlich</h2>
+          <p>
+            Richtige Antworten erhalten vorab festgelegte Punkte:
+          </p>
+
+          <table>
+            <tbody>
+              <tr><td>Häufig</td><td>10 Punkte</td></tr>
+              <tr><td>Bekannt</td><td>25 Punkte</td></tr>
+              <tr><td>Ungewöhnlich</td><td>50 Punkte</td></tr>
+              <tr><td>Selten</td><td>75 Punkte</td></tr>
+              <tr><td>Sehr selten</td><td>100 Punkte</td></tr>
+              <tr><td>Nicht erkannt oder leer</td><td>0 Punkte</td></tr>
+            </tbody>
+          </table>
+
+          <p class="muted">
+            Die Seltenheitsstufen sind redaktionelle Einschätzungen,
+            keine gemessenen Antwortquoten anderer Spieler.
+            Nicht jede Frage enthält jede Punktestufe.
+          </p>
+
+          <h2>Eine Abgabe ist endgültig</h2>
+          <p>
+            Du kannst abgegebene Antworten nicht ändern.
+            Es gibt kein Zeitlimit.
+            Eine leere Antwort überspringt die Frage.
+          </p>
+
+          <h2>Neuer Tag, neue Runde</h2>
+          <p>
+            Der Tageswechsel erfolgt um 00:00 Uhr in Europe/Berlin.
+            Fehlende Antworten einer angefangenen Runde
+            zählen anschließend als 0 Punkte.
+          </p>
+
+          <h2>Keine Pflichtanmeldung</h2>
+          <p>
+            Dein Spielstand bleibt in diesem Browser gespeichert.
+            Gelöschte Browserdaten oder andere Geräte
+            haben keinen Zugriff auf diesen Spielstand.
+          </p>
+        </section>
+
+        <details class="card">
+          <summary>Grenzen dieses Prototyps</summary>
+
+          <p>
+            Die Tagessperre basiert auf lokalem Browserspeicher
+            und ist nicht manipulationssicher.
+          </p>
+
+          <p>
+            Antworten stehen im Quellcode. Diese Version ist
+            nicht für einen manipulationssicheren Wettbewerb geeignet.
+          </p>
+
+          <p>
+            Der begrenzte Fragenpool führt zu wiederkehrenden Fragen.
+            Akzeptierte Schreibvarianten sind nicht vollständig.
+            Inhalte und Punkte sind vor einem öffentlichen
+            Spielbetrieb redaktionell zu prüfen.
+          </p>
+
+          <p>
+            Es gibt keine gemeinsame Datenbank,
+            echte Onlinekonten oder globale Rangliste.
+          </p>
+        </details>
+      `;
+    }
+
+    function render() {
+      closeExpired();
+
+      if (currentView === "play") {
+        renderPlay();
+      } else if (currentView === "result") {
+        renderResult();
+      } else if (currentView === "stats") {
+        renderStats();
+      } else if (currentView === "rules") {
+        renderRules();
+      } else {
+        renderHome();
+      }
+
+      updateCountdown();
+    }
+
+    async function shareResult() {
+      const key = resultDate || berlinDate();
+      const day = state.days[key];
+
+      if (!day || !day.finished) return;
+
+      const points = day.questions.map((question, index) => {
+        const answer = day.answers[index];
+        return answer ? answer.points : 0;
+      });
+
+      const text = [
+        `Selten · ${displayDate(key)}`,
+        `${totalScore(day)}/500 Punkte`,
+        points.join(" · "),
+        "Fünf Fragen. Seltene Antworten."
+      ].join("\n");
+
+      try {
+        await navigator.clipboard.writeText(text);
+        toast("Ergebnis kopiert.");
+      } catch (error) {
+        window.prompt("Kopiere dein Ergebnis:", text);
+      }
+    }
+
+    function millisecondsToNextDay() {
+      const now = Date.now();
+      const current = berlinDate(new Date(now));
+
+      let low = now;
+      let high = now + 27 * 60 * 60 * 1000;
+
+      while (high - low > 1000) {
+        const middle = Math.floor((low + high) / 2);
+
+        if (berlinDate(new Date(middle)) === current) {
+          low = middle;
+        } else {
+          high = middle;
+        }
+      }
+
+      return Math.max(0, high - now);
+    }
+
+    function updateCountdown() {
+      const elements = document.querySelectorAll("[data-countdown]");
+
+      if (!elements.length) return;
+
+      const seconds = Math.floor(millisecondsToNextDay() / 1000);
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const rest = seconds % 60;
+
+      const text = [hours, minutes, rest]
+        .map(value => String(value).padStart(2, "0"))
+        .join(":");
+
+      elements.forEach(element => {
+        element.textContent = text;
+      });
+    }
+
+    document.addEventListener("click", event => {
+      const viewButton = event.target.closest("[data-view]");
+
+      if (viewButton) {
+        changeView(viewButton.dataset.view);
+        return;
+      }
+
+      const resultButton = event.target.closest("[data-result]");
+
+      if (resultButton) {
+        resultDate = resultButton.dataset.result;
+        changeView("result");
+        return;
+      }
+
+      const actionButton = event.target.closest("[data-action]");
+
+      if (!actionButton) return;
+
+      const action = actionButton.dataset.action;
+
+      if (action === "start" || action === "continue") {
+        startGame();
+      } else if (action === "today-result") {
+        resultDate = berlinDate();
+        changeView("result");
+      } else if (action === "share") {
+        shareResult();
+      }
+    });
+
+    window.addEventListener("storage", event => {
+      if (event.key === STORAGE_KEY) {
+        state = readState();
+        render();
+      }
+    });
+
+    let lastDate = berlinDate();
+
+    setInterval(() => {
+      const date = berlinDate();
+
+      if (date !== lastDate) {
+        lastDate = date;
+        closeExpired();
+
+        if (currentView === "play") {
+          currentView = "home";
+        }
+
+        render();
+        toast("Ein neuer Spieltag hat begonnen.");
+      } else {
+        updateCountdown();
+      }
+    }, 1000);
+
+    render();
+  </script>
+</body>
+</html>
