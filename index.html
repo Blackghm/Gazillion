@@ -1,1552 +1,1280 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  >
-  <meta
-    name="description"
-    content="Selten: Fünf tägliche Wissensfragen. Ungewöhnliche richtige Antworten bringen mehr Punkte."
-  >
-  <title>Selten – das tägliche Quiz</title>
-
-  <style>
-    :root {
-      --background: #f6f5ef;
-      --surface: #ffffff;
-      --text: #203530;
-      --muted: #66756e;
-      --primary: #216c58;
-      --primary-dark: #164d3f;
-      --accent: #e7ab66;
-      --border: #dfe5dc;
-      --success: #e5f2e9;
-      --error: #fff0e9;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background: var(--background);
-      color: var(--text);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", sans-serif;
-      line-height: 1.6;
-    }
-
-    button,
-    input {
-      font: inherit;
-    }
-
-    button,
-    a {
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    button:disabled {
-      opacity: 0.55;
-      cursor: default;
-    }
-
-    button:focus-visible,
-    input:focus-visible,
-    a:focus-visible,
-    summary:focus-visible {
-      outline: 3px solid var(--accent);
-      outline-offset: 4px;
-    }
-
-    header {
-      max-width: 1040px;
-      margin: 0 auto;
-      padding: 25px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-    }
-
-    .brand {
-      border: 0;
-      background: transparent;
-      color: var(--text);
-      padding: 0;
-      font-size: 34px;
-      font-weight: 850;
-      letter-spacing: -2px;
-    }
-
-    .brand span {
-      color: var(--accent);
-    }
-
-    nav {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .nav-button {
-      background: transparent;
-      border: 0;
-      padding: 6px 0;
-      color: var(--primary);
-      font-size: 14px;
-    }
-
-    main {
-      max-width: 740px;
-      margin: 32px auto 70px;
-      padding: 0 24px;
-    }
-
-    h1 {
-      font-size: clamp(38px, 8vw, 65px);
-      line-height: 1.08;
-      letter-spacing: -2px;
-      margin: 18px 0 24px;
-    }
-
-    h2 {
-      font-size: 23px;
-      line-height: 1.3;
-    }
-
-    h3 {
-      font-size: 18px;
-    }
-
-    p {
-      margin: 12px 0;
-    }
-
-    .eyebrow {
-      color: var(--primary);
-      font-size: 12px;
-      font-weight: 750;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .intro {
-      max-width: 580px;
-      font-size: 20px;
-      color: var(--muted);
-    }
-
-    .card {
-      margin: 22px 0;
-      padding: 28px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      box-shadow: 0 8px 25px rgba(30, 55, 40, 0.025);
-    }
-
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 9px;
-      margin: 22px 0;
-    }
-
-    .chip {
-      border: 1px solid var(--border);
-      border-radius: 30px;
-      padding: 6px 12px;
-      font-size: 13px;
-    }
-
-    .primary,
-    .secondary {
-      display: inline-block;
-      padding: 13px 20px;
-      border-radius: 11px;
-      font-weight: 650;
-      margin: 8px 6px 8px 0;
-    }
-
-    .primary {
-      border: 1px solid var(--primary);
-      background: var(--primary);
-      color: white;
-    }
-
-    .primary:hover:not(:disabled) {
-      background: var(--primary-dark);
-    }
-
-    .secondary {
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--primary);
-    }
-
-    .muted {
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .small {
-      font-size: 13px;
-    }
-
-    .notice {
-      padding: 16px 18px;
-      border-radius: 12px;
-      background: #fff3dc;
-      font-size: 14px;
-    }
-
-    label {
-      display: block;
-      font-weight: 650;
-      margin-top: 20px;
-    }
-
-    input {
-      width: 100%;
-      padding: 15px;
-      margin: 8px 0 12px;
-      border: 1px solid #95a69b;
-      border-radius: 11px;
-      background: white;
-      color: var(--text);
-    }
-
-    .question-title {
-      font-size: clamp(28px, 5vw, 39px);
-      letter-spacing: -1px;
-      line-height: 1.2;
-    }
-
-    progress {
-      width: 100%;
-      height: 9px;
-      accent-color: var(--primary);
-    }
-
-    .score {
-      font-size: 76px;
-      font-weight: 800;
-      letter-spacing: -4px;
-      line-height: 1;
-      margin-top: 20px;
-    }
-
-    .score small {
-      font-size: 23px;
-      font-weight: 500;
-      letter-spacing: 0;
-      color: var(--muted);
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin: 24px 0;
-    }
-
-    .stat {
-      text-align: center;
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      padding: 18px 10px;
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 28px;
-    }
-
-    .stat span {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .result-row {
-      padding: 20px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .result-row:last-child {
-      border-bottom: 0;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      background: var(--success);
-      margin-top: 6px;
-    }
-
-    .badge.invalid {
-      background: var(--error);
-    }
-
-    .countdown {
-      font-variant-numeric: tabular-nums;
-      font-weight: 700;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    td,
-    th {
-      padding: 12px 8px;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-      font-size: 14px;
-    }
-
-    details {
-      margin: 18px 0;
-    }
-
-    summary {
-      cursor: pointer;
-      font-weight: 650;
-    }
-
-    footer {
-      max-width: 740px;
-      margin: auto;
-      padding: 20px 24px 35px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    #toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: max-content;
-      max-width: calc(100% - 32px);
-      background: var(--text);
-      color: white;
-      padding: 12px 18px;
-      border-radius: 12px;
-      z-index: 10;
-    }
-
-    [hidden] {
-      display: none !important;
-    }
-
-    @media (max-width: 520px) {
-      header {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      main {
-        margin-top: 20px;
-      }
-
-      .card {
-        padding: 22px;
-      }
-
-      .stats {
-        gap: 8px;
-      }
-
-      .stat {
-        padding: 14px 5px;
-      }
-
-      .stat strong {
-        font-size: 23px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      * {
-        scroll-behavior: auto !important;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Gazillion: Fünf tägliche Fragen. Seltene Antworten bringen dich nach oben.">
+<title>Gazillion – hoch hinaus</title>
+<style>
+:root {
+  --bg:#f5f4ee;
+  --paper:#fff;
+  --ink:#203830;
+  --muted:#61756b;
+  --green:#216c58;
+  --line:#dce5da;
+  --gold:#e9ac61;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font:17px/1.6 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+button,input { font:inherit; }
+button { cursor:pointer; }
+button:disabled { opacity:.55; cursor:default; }
+:focus-visible { outline:3px solid var(--gold); outline-offset:4px; }
+header {
+  max-width:1100px;
+  margin:auto;
+  padding:23px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+}
+.brand {
+  border:0;
+  background:none;
+  padding:0;
+  color:var(--ink);
+  font-size:30px;
+  letter-spacing:-1.5px;
+  font-weight:850;
+}
+.brand span { color:var(--gold); }
+nav { display:flex; flex-wrap:wrap; gap:15px; }
+nav button,.link {
+  border:0;
+  background:none;
+  color:var(--green);
+  padding:3px;
+  font-size:14px;
+}
+main { max-width:1000px; margin:25px auto 60px; padding:0 23px; }
+h1 {
+  font-size:clamp(38px,6vw,62px);
+  line-height:1.08;
+  letter-spacing:-2px;
+  margin:18px 0 23px;
+}
+h2 { font-size:24px; line-height:1.3; }
+p { margin:12px 0; }
+.eyebrow {
+  color:var(--green);
+  font-size:12px;
+  font-weight:750;
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+.intro { font-size:20px; color:var(--muted); }
+.card {
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:21px;
+  padding:27px;
+  margin:20px 0;
+}
+.grid { display:grid; grid-template-columns:minmax(0,1fr) 310px; gap:25px; }
+.primary,.secondary {
+  border-radius:11px;
+  padding:13px 18px;
+  margin:7px 6px 7px 0;
+  font-weight:650;
+}
+.primary { border:1px solid var(--green); background:var(--green); color:white; }
+.primary:hover:not(:disabled) { background:#174d40; }
+.secondary { border:1px solid var(--line); background:white; color:var(--green); }
+.muted { font-size:14px; color:var(--muted); }
+.notice {
+  padding:15px;
+  border-radius:12px;
+  background:#fff1d9;
+  font-size:14px;
+}
+.chips { display:flex; flex-wrap:wrap; gap:8px; margin:22px 0; }
+.chips span { border:1px solid var(--line); border-radius:25px; padding:6px 11px; font-size:13px; }
+label { display:block; margin:18px 0 7px; font-weight:650; }
+input {
+  width:100%;
+  padding:15px;
+  border:1px solid #91a798;
+  border-radius:11px;
+  color:var(--ink);
+  background:white;
+}
+.question { font-size:clamp(27px,4vw,37px); line-height:1.2; letter-spacing:-.8px; }
+.time-head { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.timer {
+  min-width:67px;
+  text-align:center;
+  padding:6px 10px;
+  background:#e5f2e8;
+  border-radius:22px;
+  font-weight:800;
+  font-variant-numeric:tabular-nums;
+}
+.timer.urgent { background:#ffe3d9; color:#9b3424; }
+.time-track { height:7px; border-radius:8px; overflow:hidden; background:#e6ebe3; margin:10px 0 22px; }
+.time-fill { height:100%; width:100%; background:var(--green); transition:width .1s linear; }
+.time-fill.urgent { background:#bf5e41; }
+.suggestion {
+  margin:15px 0;
+  border:1px solid #e8cb9a;
+  border-radius:12px;
+  padding:15px;
+  background:#fff7e9;
+}
+.points { font-size:65px; font-weight:850; line-height:1.1; letter-spacing:-3px; margin:17px 0; }
+.points small { font-size:21px; letter-spacing:0; color:var(--muted); }
+.badge { background:#e7f2e9; border-radius:25px; display:inline-block; font-size:13px; padding:5px 11px; }
+.badge.zero { background:#fff0e8; }
+.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:20px 0; }
+.stat { border:1px solid var(--line); border-radius:14px; background:white; padding:17px 8px; text-align:center; }
+.stat strong { display:block; font-size:28px; }
+.stat span { color:var(--muted); font-size:12px; }
+.result-row { padding:17px 0; border-bottom:1px solid var(--line); }
+.result-row:last-child { border:0; }
+.result-row h3 { font-size:17px; margin:5px 0; }
+.world-card { margin:20px 0; align-self:start; position:sticky; top:20px; }
+.world-title { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-size:14px; }
+.height-label { font-weight:800; font-variant-numeric:tabular-nums; }
+.world {
+  height:465px;
+  position:relative;
+  overflow:hidden;
+  border:1px solid #cddfd6;
+  border-radius:22px;
+  background:#c9e9ef;
+}
+.sky {
+  position:absolute;
+  inset:0;
+  transition:background 1.8s ease;
+  background:linear-gradient(#87c8e7,#def3e4);
+}
+.sun { position:absolute; top:32px; right:26px; width:48px; height:48px; border-radius:50%; background:#ffe4a1; box-shadow:0 0 35px #ffe4a180; }
+.stars { position:absolute; inset:0; opacity:0; transition:opacity 1.8s; background-image:radial-gradient(white 1px,transparent 2px); background-size:43px 51px; }
+.scenery {
+  position:absolute;
+  inset:0;
+  transition:transform 1.8s cubic-bezier(.2,.8,.2,1);
+}
+.cloud { position:absolute; width:90px; height:24px; background:#ffffffcf; border-radius:50px; }
+.cloud::before { content:""; position:absolute; width:38px; height:38px; border-radius:50%; background:inherit; left:17px; bottom:3px; }
+.cloud.c1 { top:85px; left:18px; }
+.cloud.c2 { top:210px; right:-12px; width:110px; }
+.cloud.c3 { top:-70px; right:35px; }
+.cloud.c4 { top:-210px; left:5px; }
+.mountain { position:absolute; bottom:27px; width:0; height:0; border-left:125px solid transparent; border-right:125px solid transparent; border-bottom:180px solid #7ca89b; }
+.mountain.back { bottom:35px; left:-85px; border-bottom-color:#a1bfb1; border-bottom-width:220px; }
+.mountain.front { right:-95px; }
+.ground { position:absolute; bottom:0; left:0; right:0; height:50px; background:#508568; border-radius:50% 50% 0 0; }
+.ruler { position:absolute; right:10px; top:12px; bottom:12px; width:9px; background:repeating-linear-gradient(to bottom,transparent 0,transparent 21px,#ffffff99 22px,#ffffff99 23px); }
+.balloon {
+  position:absolute;
+  left:calc(50% - 33px);
+  bottom:42px;
+  width:66px;
+  height:105px;
+  transition:transform 1.8s cubic-bezier(.2,.8,.2,1);
+  z-index:3;
+  filter:drop-shadow(0 5px 5px #20403020);
+}
+.envelope { width:66px; height:76px; border-radius:50% 50% 46% 46%; background:linear-gradient(90deg,#bd613c 0%,#e99761 26%,#f6c27b 49%,#e99761 74%,#bd613c 100%); position:relative; }
+.envelope::after { content:""; position:absolute; left:18px; bottom:-12px; width:29px; height:17px; border-left:1px solid #6b583f; border-right:1px solid #6b583f; }
+.basket { position:absolute; width:29px; height:19px; background:#916b49; border-radius:2px 2px 7px 7px; bottom:0; left:18px; border-top:4px solid #735035; }
+.world-caption { text-align:center; padding:10px; font-size:13px; color:var(--muted); }
+.lift {
+  position:absolute; top:45%; left:0; right:0; text-align:center; color:white;
+  font-weight:850; font-size:31px; text-shadow:0 2px 7px #2349;
+  opacity:0; pointer-events:none; z-index:4;
+}
+.lift.go { animation:lift 1.8s ease-out; }
+@keyframes lift { 0%{opacity:0;transform:translateY(30px)} 20%{opacity:1} 80%{opacity:1} 100%{opacity:0;transform:translateY(-45px)} }
+footer { max-width:1000px; margin:auto; padding:25px; font-size:12px; color:var(--muted); }
+#toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--ink); color:white; padding:12px 17px; border-radius:12px; z-index:20; max-width:90%; }
+[hidden] { display:none!important; }
+details { margin:18px 0; }
+summary { cursor:pointer; font-weight:650; }
+@media(max-width:740px) {
+  header { align-items:flex-start; flex-direction:column; }
+  .grid { grid-template-columns:minmax(0,1fr); gap:0; }
+  .world-card { position:relative; top:0; }
+  .world { height:310px; }
+  .card { padding:22px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after { animation:none!important; transition:none!important; }
+  .lift.go { opacity:1; }
+}
+</style>
 </head>
-
 <body>
-  <header>
-    <button class="brand" data-view="home" aria-label="Zur Startseite">
-      selten<span>.</span>
-    </button>
+<header>
+  <button class="brand" data-view="home">gazillion<span>.</span></button>
+  <nav aria-label="Hauptnavigation">
+    <button data-view="home">Heute</button>
+    <button data-view="stats">Meine Statistik</button>
+    <button data-view="rules">Spielregeln</button>
+  </nav>
+</header>
+<main id="app">
+  <p>Das Spiel wird geladen.</p>
+</main>
+<noscript>Bitte aktiviere JavaScript, um zu spielen.</noscript>
+<footer>
+  Lokaler Spielprototyp. Keine globale Rangliste, keine Onlinekonten.
+  Antworten und Punkte stehen im Quellcode.
+</footer>
+<div id="toast" role="status" hidden></div>
 
-    <nav aria-label="Hauptnavigation">
-      <button class="nav-button" data-view="home">Heute</button>
-      <button class="nav-button" data-view="stats">Meine Statistik</button>
-      <button class="nav-button" data-view="rules">Spielregeln</button>
-    </nav>
-  </header>
+<script>
+"use strict";
 
-  <main id="app"></main>
+const KEY = "gazillion-timed-v2";
+const LEVELS = {
+  0:"Keine Punkte",
+  10:"Häufig",
+  25:"Bekannt",
+  50:"Ungewöhnlich",
+  75:"Selten",
+  100:"Sehr selten"
+};
 
-  <footer>
-    Lokaler Prototyp: Ergebnisse werden nur in diesem Browser gespeichert.
-    Kein Konto erforderlich. Keine globale Rangliste.
-  </footer>
+/* Redaktioneller Demo-Fragenpool: Seltenheit ist geschätzt. */
+const QUESTIONS = [
+  {
+    id:"nachbarn",
+    text:"Nenne einen souveränen Staat, der an Deutschland grenzt.",
+    answers:[
+      ["Frankreich",10,[]],
+      ["Österreich",10,["Oesterreich"]],
+      ["Schweiz",25,[]],
+      ["Polen",25,[]],
+      ["Niederlande",25,["Holland"]],
+      ["Dänemark",50,[]],
+      ["Tschechien",50,["Tschechische Republik"]],
+      ["Belgien",75,[]],
+      ["Luxemburg",100,[]]
+    ]
+  },
+  {
+    id:"planeten",
+    text:"Nenne einen der acht Planeten unseres Sonnensystems.",
+    answers:[
+      ["Erde",10,[]],["Mars",10,[]],["Jupiter",25,[]],
+      ["Saturn",25,[]],["Venus",50,[]],["Merkur",75,[]],
+      ["Uranus",75,[]],["Neptun",100,[]]
+    ]
+  },
+  {
+    id:"bundeslaender",
+    text:"Nenne eines der 16 deutschen Bundesländer.",
+    answers:[
+      ["Bayern",10,[]],["Berlin",10,[]],["Hamburg",25,[]],
+      ["Hessen",25,[]],
+      ["Nordrhein-Westfalen",25,["NRW","Nordrhein Westfalen"]],
+      ["Baden-Württemberg",25,["Baden Württemberg","BW"]],
+      ["Niedersachsen",50,[]],["Sachsen",50,[]],
+      ["Rheinland-Pfalz",50,["Rheinland Pfalz","RLP"]],
+      ["Brandenburg",75,[]],["Bremen",75,[]],["Thüringen",75,[]],
+      ["Schleswig-Holstein",75,["Schleswig Holstein"]],
+      ["Saarland",100,[]],
+      ["Sachsen-Anhalt",100,["Sachsen Anhalt"]],
+      ["Mecklenburg-Vorpommern",100,["Mecklenburg Vorpommern","MV"]]
+    ]
+  },
+  {
+    id:"tierkreis",
+    text:"Nenne eines der zwölf westlichen Tierkreiszeichen.",
+    answers:[
+      ["Widder",25,[]],["Stier",25,[]],["Zwillinge",25,[]],
+      ["Krebs",25,[]],["Löwe",10,[]],["Jungfrau",50,[]],
+      ["Waage",50,[]],["Skorpion",25,[]],["Schütze",75,[]],
+      ["Steinbock",75,[]],["Wassermann",100,[]],["Fische",50,[]]
+    ]
+  },
+  {
+    id:"elemente",
+    text:"Nenne ein chemisches Element mit Ordnungszahl 1 bis 10.",
+    answers:[
+      ["Wasserstoff",10,["H"]],["Helium",25,["He"]],
+      ["Lithium",50,["Li"]],["Beryllium",100,["Be"]],
+      ["Bor",100,["B"]],["Kohlenstoff",25,["C"]],
+      ["Stickstoff",50,["N"]],["Sauerstoff",10,["O"]],
+      ["Fluor",75,["F"]],["Neon",75,["Ne"]]
+    ]
+  },
+  {
+    id:"un",
+    text:"Nenne eine der sechs offiziellen Amtssprachen der Vereinten Nationen.",
+    answers:[
+      ["Englisch",10,[]],["Französisch",25,[]],
+      ["Spanisch",25,[]],["Russisch",75,[]],
+      ["Arabisch",100,[]],["Chinesisch",50,["Mandarin","Hochchinesisch"]]
+    ]
+  },
+  {
+    id:"koerper",
+    text:"Nenne einen der fünf platonischen Körper.",
+    answers:[
+      ["Tetraeder",25,[]],["Hexaeder",10,["Würfel","Kubus"]],
+      ["Oktaeder",50,[]],["Dodekaeder",75,[]],["Ikosaeder",100,[]]
+    ]
+  },
+  {
+    id:"dna",
+    text:"Nenne eine der vier üblichen Basen der DNA.",
+    answers:[
+      ["Adenin",25,["A"]],["Thymin",50,["T"]],
+      ["Guanin",75,["G"]],["Cytosin",100,["C","Zytosin"]]
+    ]
+  },
+  {
+    id:"monde",
+    text:"Nenne einen der vier Galileischen Monde des Jupiter.",
+    answers:[
+      ["Io",25,[]],["Europa",10,[]],
+      ["Ganymed",75,["Ganymedes"]],["Kallisto",100,["Callisto"]]
+    ]
+  },
+  {
+    id:"baltikum",
+    text:"Nenne einen der drei baltischen Staaten.",
+    answers:[["Estland",25,[]],["Lettland",75,[]],["Litauen",100,[]]]
+  },
+  {
+    id:"seen",
+    text:"Nenne einen der fünf Großen Seen Nordamerikas.",
+    answers:[
+      ["Oberer See",100,["Lake Superior","Superior"]],
+      ["Michigansee",25,["Lake Michigan","Michigan"]],
+      ["Huronsee",75,["Lake Huron","Huron"]],
+      ["Eriesee",50,["Lake Erie","Erie"]],
+      ["Ontariosee",25,["Lake Ontario","Ontario"]]
+    ]
+  },
+  {
+    id:"tennis",
+    text:"Nenne einen der vier Grand-Slam-Tenniswettbewerbe.",
+    answers:[
+      ["Australian Open",50,[]],["French Open",75,["Roland Garros"]],
+      ["Wimbledon",10,["The Championships"]],
+      ["US Open",100,["U.S. Open","US-Open"]]
+    ]
+  },
+  {
+    id:"schweiz",
+    text:"Nenne einen souveränen Staat, der an die Schweiz grenzt.",
+    answers:[
+      ["Deutschland",10,[]],["Frankreich",25,[]],
+      ["Italien",25,[]],["Österreich",75,[]],["Liechtenstein",100,[]]
+    ]
+  },
+  {
+    id:"skandinavien",
+    text:"Nenne eines der drei skandinavischen Länder im engeren geografischen Sinn.",
+    answers:[["Schweden",10,[]],["Norwegen",50,[]],["Dänemark",100,[]]]
+  }
+];
 
-  <div id="toast" role="status" hidden></div>
+const app = document.getElementById("app");
+let view = "home";
+let selectedDate = null;
+let candidate = null;
+let timer = null;
+let toastTimer = null;
+let animationTimers = [];
+let storageOK = true;
+let locked = false;
 
-  <script>
-    "use strict";
+function esc(value) {
+  return String(value).replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
 
-    /*
-      SELTEN – EIN-DATEI-PROTOTYP
+function norm(value) {
+  return String(value).normalize("NFKC").toLowerCase()
+    .replace(/ä/g,"ae").replace(/ö/g,"oe")
+    .replace(/ü/g,"ue").replace(/ß/g,"ss")
+    .replace(/[‐‑–—]/g,"-").trim().replace(/\s+/g," ");
+}
 
-      Kein Server, keine Datenbank, keine externen Bibliotheken.
+function today(now = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-GB",{
+    timeZone:"Europe/Berlin",
+    year:"numeric",month:"2-digit",day:"2-digit"
+  }).formatToParts(now);
+  const get = type => parts.find(p => p.type === type).value;
+  return `${get("year")}-${get("month")}-${get("day")}`;
+}
 
-      Einschränkungen:
-      - Antworten und Punkte sind im Quellcode einsehbar.
-      - localStorage ist keine sichere Teilnahmebegrenzung.
-      - Browserdaten können gelöscht oder verändert werden.
-      - Kein geräteübergreifendes Konto.
-      - Keine globale Rangliste.
-      - Seltenheit ist redaktionell eingeschätzt.
-    */
+function dayNumber(key) {
+  const [y,m,d] = key.split("-").map(Number);
+  return Math.floor(Date.UTC(y,m-1,d)/86400000);
+}
 
-    const STORAGE_KEY = "selten-local-v1";
+function previous(key) {
+  return new Date((dayNumber(key)-1)*86400000).toISOString().slice(0,10);
+}
 
-    const LEVELS = {
-      0: "Nicht erkannt",
-      10: "Häufig",
-      25: "Bekannt",
-      50: "Ungewöhnlich",
-      75: "Selten",
-      100: "Sehr selten"
-    };
+function formatDate(key) {
+  return new Intl.DateTimeFormat("de-DE",{
+    dateStyle:"long",timeZone:"UTC"
+  }).format(new Date(key+"T12:00:00Z"));
+}
 
-    /*
-      Jede Antwort:
-      [Bezeichnung, Punkte, akzeptierte weitere Schreibweisen]
-    */
-    const QUESTIONS = [
-      {
-        id: "germany-neighbours",
-        text: "Nenne einen souveränen Staat, der an Deutschland grenzt.",
-        answers: [
-          ["Frankreich", 10, []],
-          ["Österreich", 10, ["Oesterreich"]],
-          ["Schweiz", 25, []],
-          ["Polen", 25, []],
-          ["Niederlande", 25, ["Holland"]],
-          ["Dänemark", 50, []],
-          ["Tschechien", 50, ["Tschechische Republik"]],
-          ["Belgien", 75, []],
-          ["Luxemburg", 100, []]
-        ]
-      },
-      {
-        id: "planets",
-        text: "Nenne einen der acht Planeten unseres Sonnensystems.",
-        answers: [
-          ["Erde", 10, []],
-          ["Mars", 10, []],
-          ["Jupiter", 25, []],
-          ["Saturn", 25, []],
-          ["Venus", 50, []],
-          ["Merkur", 75, []],
-          ["Uranus", 75, []],
-          ["Neptun", 100, []]
-        ]
-      },
-      {
-        id: "german-states",
-        text: "Nenne eines der 16 deutschen Bundesländer.",
-        answers: [
-          ["Bayern", 10, []],
-          ["Berlin", 10, []],
-          ["Hamburg", 25, []],
-          ["Hessen", 25, []],
-          ["Nordrhein-Westfalen", 25, ["NRW", "Nordrhein Westfalen"]],
-          ["Baden-Württemberg", 25, ["Baden Württemberg", "BW"]],
-          ["Niedersachsen", 50, []],
-          ["Sachsen", 50, []],
-          ["Rheinland-Pfalz", 50, ["Rheinland Pfalz", "RLP"]],
-          ["Brandenburg", 75, []],
-          ["Bremen", 75, []],
-          ["Thüringen", 75, []],
-          ["Schleswig-Holstein", 75, ["Schleswig Holstein"]],
-          ["Saarland", 100, []],
-          ["Sachsen-Anhalt", 100, ["Sachsen Anhalt"]],
-          [
-            "Mecklenburg-Vorpommern",
-            100,
-            ["Mecklenburg Vorpommern", "MV"]
-          ]
-        ]
-      },
-      {
-        id: "zodiac",
-        text: "Nenne eines der zwölf westlichen Tierkreiszeichen.",
-        answers: [
-          ["Widder", 25, []],
-          ["Stier", 25, []],
-          ["Zwillinge", 25, []],
-          ["Krebs", 25, []],
-          ["Löwe", 10, []],
-          ["Jungfrau", 50, []],
-          ["Waage", 50, []],
-          ["Skorpion", 25, []],
-          ["Schütze", 75, []],
-          ["Steinbock", 75, []],
-          ["Wassermann", 100, []],
-          ["Fische", 50, []]
-        ]
-      },
-      {
-        id: "elements-ten",
-        text: "Nenne ein chemisches Element mit Ordnungszahl 1 bis 10.",
-        answers: [
-          ["Wasserstoff", 10, ["H"]],
-          ["Helium", 25, ["He"]],
-          ["Lithium", 50, ["Li"]],
-          ["Beryllium", 100, ["Be"]],
-          ["Bor", 100, ["B"]],
-          ["Kohlenstoff", 25, ["C"]],
-          ["Stickstoff", 50, ["N"]],
-          ["Sauerstoff", 10, ["O"]],
-          ["Fluor", 75, ["F"]],
-          ["Neon", 75, ["Ne"]]
-        ]
-      },
-      {
-        id: "un-languages",
-        text: "Nenne eine der sechs offiziellen Amtssprachen der Vereinten Nationen.",
-        answers: [
-          ["Englisch", 10, []],
-          ["Französisch", 25, []],
-          ["Spanisch", 25, []],
-          ["Russisch", 75, []],
-          ["Arabisch", 100, []],
-          ["Chinesisch", 50, ["Mandarin", "Hochchinesisch"]]
-        ]
-      },
-      {
-        id: "platonic",
-        text: "Nenne einen der fünf platonischen Körper.",
-        answers: [
-          ["Tetraeder", 25, []],
-          ["Hexaeder", 10, ["Würfel", "Kubus"]],
-          ["Oktaeder", 50, []],
-          ["Dodekaeder", 75, []],
-          ["Ikosaeder", 100, []]
-        ]
-      },
-      {
-        id: "dna",
-        text: "Nenne eine der vier üblichen Basen der DNA.",
-        answers: [
-          ["Adenin", 25, ["A"]],
-          ["Thymin", 50, ["T"]],
-          ["Guanin", 75, ["G"]],
-          ["Cytosin", 100, ["C", "Zytosin"]]
-        ]
-      },
-      {
-        id: "jupiter-moons",
-        text: "Nenne einen der vier Galileischen Monde des Jupiter.",
-        answers: [
-          ["Io", 25, []],
-          ["Europa", 10, []],
-          ["Ganymed", 75, ["Ganymedes"]],
-          ["Kallisto", 100, ["Callisto"]]
-        ]
-      },
-      {
-        id: "baltic",
-        text: "Nenne einen der drei baltischen Staaten.",
-        answers: [
-          ["Estland", 25, []],
-          ["Lettland", 75, []],
-          ["Litauen", 100, []]
-        ]
-      },
-      {
-        id: "great-lakes",
-        text: "Nenne einen der fünf Großen Seen Nordamerikas.",
-        answers: [
-          ["Oberer See", 100, ["Lake Superior", "Superior"]],
-          ["Michigansee", 25, ["Lake Michigan", "Michigan"]],
-          ["Huronsee", 75, ["Lake Huron", "Huron"]],
-          ["Eriesee", 50, ["Lake Erie", "Erie"]],
-          ["Ontariosee", 25, ["Lake Ontario", "Ontario"]]
-        ]
-      },
-      {
-        id: "tennis",
-        text: "Nenne einen der vier Grand-Slam-Tenniswettbewerbe.",
-        answers: [
-          ["Australian Open", 50, []],
-          ["French Open", 75, ["Roland Garros"]],
-          ["Wimbledon", 10, ["The Championships"]],
-          ["US Open", 100, ["U.S. Open", "US-Open"]]
-        ]
-      },
-      {
-        id: "switzerland-neighbours",
-        text: "Nenne einen souveränen Staat, der an die Schweiz grenzt.",
-        answers: [
-          ["Deutschland", 10, []],
-          ["Frankreich", 25, []],
-          ["Italien", 25, []],
-          ["Österreich", 75, []],
-          ["Liechtenstein", 100, []]
-        ]
-      },
-      {
-        id: "scandinavia",
-        text: "Nenne eines der drei skandinavischen Länder im engeren geografischen Sinn.",
-        answers: [
-          ["Schweden", 10, []],
-          ["Norwegen", 50, []],
-          ["Dänemark", 100, []]
-        ]
+function emptyState() {
+  return {version:2,days:{}};
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return emptyState();
+    const parsed = JSON.parse(raw);
+    if (parsed.version !== 2 || !parsed.days ||
+        typeof parsed.days !== "object") {
+      throw new Error("Ungültiger Spielstand");
+    }
+    return parsed;
+  } catch (error) {
+    storageOK = false;
+    return emptyState();
+  }
+}
+
+let state = load();
+
+function toast(text) {
+  const el = document.getElementById("toast");
+  el.textContent = text;
+  el.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {el.hidden = true;},4500);
+}
+
+function save() {
+  try {
+    localStorage.setItem(KEY,JSON.stringify(state));
+    return true;
+  } catch (error) {
+    storageOK = false;
+    toast("Speichern nicht möglich. Bitte Browserspeicher erlauben.");
+    return false;
+  }
+}
+
+function dailyQuestions(key) {
+  const pool = [...QUESTIONS];
+  let seed = dayNumber(key) >>> 0;
+  const random = () => {
+    seed = (Math.imul(seed,1664525)+1013904223) >>> 0;
+    return seed/4294967296;
+  };
+  for (let i=pool.length-1;i>0;i--) {
+    const j = Math.floor(random()*(i+1));
+    [pool[i],pool[j]] = [pool[j],pool[i]];
+  }
+  return pool.slice(0,5);
+}
+
+function total(day) {
+  return day.answers.reduce((sum,a) => sum+a.points,0);
+}
+
+function completed() {
+  return Object.entries(state.days)
+    .filter(([,d]) => d.finished)
+    .sort(([a],[b]) => b.localeCompare(a));
+}
+
+function stats() {
+  const entries = completed();
+  const scores = entries.map(([,d]) => total(d));
+  let cursor = today();
+  if (!state.days[cursor]?.finished) cursor = previous(cursor);
+  let streak = 0;
+  while (state.days[cursor]?.finished) {
+    streak++;
+    cursor = previous(cursor);
+  }
+  return {
+    played:entries.length,
+    best:scores.length ? Math.max(...scores) : 0,
+    average:scores.length ?
+      Math.round(scores.reduce((a,b) => a+b,0)/scores.length) : 0,
+    streak
+  };
+}
+
+function expireOldDays() {
+  let changed = false;
+  const key = today();
+  for (const [date,day] of Object.entries(state.days)) {
+    if (date < key && !day.finished) {
+      while (day.answers.length < day.questions.length) {
+        day.answers.push({
+          raw:"",canonical:"",points:0,reason:"day-end"
+        });
       }
-    ];
-
-    const app = document.getElementById("app");
-
-    let currentView = "home";
-    let storageAvailable = true;
-    let busy = false;
-    let toastTimer;
-
-    function escapeHTML(value) {
-      return String(value).replace(/[&<>"']/g, character => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-      })[character]);
+      day.finished = true;
+      day.phase = "done";
+      day.deadline = null;
+      changed = true;
     }
+  }
+  if (changed) save();
+}
 
-    function normalize(value) {
-      return String(value)
-        .normalize("NFKC")
-        .toLocaleLowerCase("de-DE")
-        .replaceAll("ä", "ae")
-        .replaceAll("ö", "oe")
-        .replaceAll("ü", "ue")
-        .replaceAll("ß", "ss")
-        .replace(/[‐‑–—]/g, "-")
-        .trim()
-        .replace(/\s+/g, " ");
-    }
+/* Editierdistanz mit vertauschten benachbarten Buchstaben. */
+function distance(a,b) {
+  const matrix = Array.from({length:a.length+1},
+    () => Array(b.length+1).fill(0));
+  for (let i=0;i<=a.length;i++) matrix[i][0] = i;
+  for (let j=0;j<=b.length;j++) matrix[0][j] = j;
 
-    function berlinDate(now = new Date()) {
-      const parts = new Intl.DateTimeFormat("en-GB", {
-        timeZone: "Europe/Berlin",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit"
-      }).formatToParts(now);
-
-      const get = type => parts.find(part => part.type === type).value;
-
-      return `${get("year")}-${get("month")}-${get("day")}`;
-    }
-
-    function dateNumber(key) {
-      const [year, month, day] = key.split("-").map(Number);
-      return Math.floor(Date.UTC(year, month - 1, day) / 86400000);
-    }
-
-    function previousDate(key) {
-      return new Date(
-        (dateNumber(key) - 1) * 86400000
-      ).toISOString().slice(0, 10);
-    }
-
-    function displayDate(key) {
-      return new Intl.DateTimeFormat("de-DE", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-        timeZone: "UTC"
-      }).format(new Date(`${key}T12:00:00Z`));
-    }
-
-    function newState() {
-      return {
-        version: 1,
-        days: {}
-      };
-    }
-
-    function readState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-
-        if (!raw) return newState();
-
-        const parsed = JSON.parse(raw);
-
-        if (
-          parsed.version !== 1 ||
-          !parsed.days ||
-          typeof parsed.days !== "object"
-        ) {
-          throw new Error("Ungültiger Speicherstand");
-        }
-
-        return parsed;
-      } catch (error) {
-        storageAvailable = false;
-        return newState();
-      }
-    }
-
-    let state = readState();
-
-    function saveState() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        return true;
-      } catch (error) {
-        storageAvailable = false;
-
-        toast(
-          "Speichern nicht möglich. Bitte erlaube lokalen Browserspeicher."
-        );
-
-        return false;
-      }
-    }
-
-    function toast(message) {
-      const element = document.getElementById("toast");
-
-      element.textContent = message;
-      element.hidden = false;
-
-      clearTimeout(toastTimer);
-
-      toastTimer = setTimeout(() => {
-        element.hidden = true;
-      }, 5000);
-    }
-
-    /*
-      Tagesauswahl ist für dasselbe Datum überall identisch.
-      Kleiner Fragenpool: Kategorien wiederholen sich.
-    */
-    function dailyQuestions(key) {
-      const pool = [...QUESTIONS];
-      let seed = dateNumber(key) >>> 0;
-
-      function random() {
-        seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
-        return seed / 4294967296;
-      }
-
-      for (let index = pool.length - 1; index > 0; index--) {
-        const target = Math.floor(random() * (index + 1));
-
-        [pool[index], pool[target]] = [
-          pool[target],
-          pool[index]
-        ];
-      }
-
-      return pool.slice(0, 5);
-    }
-
-    function scoreAnswer(question, raw) {
-      const input = normalize(raw);
-
-      if (!input) {
-        return {
-          raw: "",
-          canonical: "",
-          points: 0
-        };
-      }
-
-      const match = question.answers.find(answer => {
-        const variants = [answer[0], ...answer[2]];
-
-        return variants.some(variant => normalize(variant) === input);
-      });
-
-      return {
-        raw,
-        canonical: match ? match[0] : "",
-        points: match ? match[1] : 0
-      };
-    }
-
-    function totalScore(day) {
-      return day.answers.reduce(
-        (total, answer) => total + answer.points,
-        0
+  for (let i=1;i<=a.length;i++) {
+    for (let j=1;j<=b.length;j++) {
+      matrix[i][j] = Math.min(
+        matrix[i-1][j]+1,
+        matrix[i][j-1]+1,
+        matrix[i-1][j-1]+(a[i-1] === b[j-1] ? 0 : 1)
       );
-    }
-
-    function closeExpired() {
-      const today = berlinDate();
-      let changed = false;
-
-      for (const [key, day] of Object.entries(state.days)) {
-        if (key < today && !day.finished) {
-          day.finished = true;
-          day.expired = true;
-          changed = true;
-        }
+      if (i>1 && j>1 &&
+          a[i-1] === b[j-2] && a[i-2] === b[j-1]) {
+        matrix[i][j] = Math.min(
+          matrix[i][j],matrix[i-2][j-2]+1
+        );
       }
-
-      if (changed) saveState();
     }
+  }
+  return matrix[a.length][b.length];
+}
 
-    function completedEntries() {
-      return Object.entries(state.days)
-        .filter(([, day]) => day.finished)
-        .sort(([first], [second]) => second.localeCompare(first));
-    }
+function exactAnswer(question,text) {
+  const input = norm(text);
+  if (!input) return null;
+  return question.answers.find(a =>
+    [a[0],...a[2]].some(alias => norm(alias) === input)
+  ) || null;
+}
 
-    function calculateStats() {
-      const completed = completedEntries();
-      const scores = completed.map(([, day]) => totalScore(day));
+function similarAnswer(question,text) {
+  const input = norm(text);
+  if (input.length < 4) return null;
 
-      let cursor = berlinDate();
+  const ranked = question.answers.map(answer => {
+    const variants = [answer[0],...answer[2]]
+      .map(norm).filter(alias => alias.length >= 4);
+    const score = variants.length ?
+      Math.min(...variants.map(alias => distance(input,alias))) :
+      Infinity;
+    return {answer,score};
+  }).sort((a,b) => a.score-b.score);
 
-      if (!state.days[cursor]?.finished) {
-        cursor = previousDate(cursor);
-      }
+  const first = ranked[0];
+  const limit = input.length >= 8 ? 2 : 1;
 
-      let streak = 0;
+  if (!first || first.score > limit) return null;
+  if (ranked[1] && ranked[1].score === first.score) return null;
+  return first.answer;
+}
 
-      while (state.days[cursor]?.finished) {
-        streak++;
-        cursor = previousDate(cursor);
-      }
-
-      return {
-        played: completed.length,
-        best: scores.length ? Math.max(...scores) : 0,
-        average: scores.length
-          ? Math.round(
-              scores.reduce((sum, score) => sum + score, 0) /
-              scores.length
-            )
-          : 0,
-        streak
-      };
-    }
-
-    function changeView(view) {
-      currentView = view;
-      render();
-      window.scrollTo({ top: 0 });
-    }
-
-    function renderHome() {
-      const key = berlinDate();
-      const day = state.days[key];
-      const stats = calculateStats();
-
-      let action;
-
-      if (!storageAvailable) {
-        action = `
-          <p class="notice">
-            Der lokale Speicher ist nicht verfügbar.
-            Bitte erlaube Browserspeicher und lade die Seite neu.
-          </p>
-        `;
-      } else if (day?.finished) {
-        action = `
-          <button class="primary" data-action="today-result">
-            Heutiges Ergebnis ansehen
-          </button>
-        `;
-      } else if (day) {
-        action = `
-          <button class="primary" data-action="continue">
-            Runde fortsetzen
-          </button>
-        `;
-      } else {
-        action = `
-          <p class="muted">
-            Jede abgegebene Antwort ist endgültig.
-            Leer abgeben bedeutet überspringen.
-          </p>
-          <button class="primary" data-action="start">
-            Heutiges Spiel starten
-          </button>
-        `;
-      }
-
-      app.innerHTML = `
-        <p class="eyebrow">Das tägliche Wissensspiel</p>
-
-        <h1>Richtig ist gut.<br>Selten ist besser.</h1>
-
-        <p class="intro">
-          Finde richtige Antworten, auf die nicht jeder kommt.
-          Je ungewöhnlicher die Antwort, desto mehr Punkte.
-        </p>
-
-        <div class="chips">
-          <span class="chip">5 Fragen</span>
-          <span class="chip">Max. 500 Punkte</span>
-          <span class="chip">Ohne Anmeldung</span>
-          <span class="chip">Ohne Zeitlimit</span>
+function worldMarkup(height) {
+  return `
+    <aside class="world-card" aria-label="Dein Aufstieg">
+      <div class="world-title">
+        <span>Dein Aufstieg</span>
+        <span class="height-label" id="height-label">${height} m</span>
+      </div>
+      <div class="world" id="world">
+        <div class="sky" id="sky"></div>
+        <div class="stars" id="stars"></div>
+        <div class="sun"></div>
+        <div class="scenery" id="scenery">
+          <div class="cloud c1"></div>
+          <div class="cloud c2"></div>
+          <div class="cloud c3"></div>
+          <div class="cloud c4"></div>
+          <div class="mountain back"></div>
+          <div class="mountain front"></div>
+          <div class="ground"></div>
         </div>
+        <div class="ruler"></div>
+        <div class="balloon" id="balloon">
+          <div class="envelope"></div>
+          <div class="basket"></div>
+        </div>
+        <div class="lift" id="lift"></div>
+      </div>
+      <div class="world-caption" id="zone"></div>
+    </aside>`;
+}
 
+function setWorld(height) {
+  const balloon = document.getElementById("balloon");
+  const world = document.getElementById("world");
+  if (!balloon || !world) return;
+
+  const fraction = Math.max(0,Math.min(height/500,1));
+  const travel = Math.max(80,world.clientHeight-165);
+
+  balloon.style.transform = `translateY(-${fraction*travel}px)`;
+  document.getElementById("scenery").style.transform =
+    `translateY(${fraction*320}px)`;
+
+  const sky = document.getElementById("sky");
+  sky.style.background = height >= 350
+    ? "linear-gradient(#263354,#7795b9)"
+    : height >= 200
+      ? "linear-gradient(#72a8cf,#d4e9ed)"
+      : "linear-gradient(#87c8e7,#def3e4)";
+
+  document.getElementById("stars").style.opacity =
+    height >= 350 ? "0.8" : "0";
+
+  document.getElementById("height-label").textContent = height+" m";
+
+  document.getElementById("zone").textContent =
+    height >= 400 ? "Über den Wolken" :
+    height >= 250 ? "Im hohen Himmel" :
+    height >= 100 ? "Zwischen den Wolken" :
+    height > 0 ? "Über den Baumwipfeln" : "Bereit zum Abheben";
+}
+
+function animateWorld(from,to) {
+  setWorld(from);
+  const reduced = window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const id = setTimeout(() => {
+    setWorld(to);
+    if (to > from) {
+      const el = document.getElementById("lift");
+      if (el) {
+        el.textContent = "+"+(to-from)+" m";
+        el.classList.add("go");
+      }
+    }
+  },reduced ? 0 : 100);
+
+  animationTimers.push(id);
+}
+
+function clearTimers() {
+  clearInterval(timer);
+  timer = null;
+  animationTimers.forEach(clearTimeout);
+  animationTimers = [];
+}
+
+function navigate(next) {
+  view = next;
+  candidate = null;
+  render();
+  window.scrollTo({top:0});
+}
+
+function start() {
+  if (!storageOK) {
+    toast("Bitte erlaube den lokalen Browserspeicher.");
+    return;
+  }
+
+  state = load();
+  if (!storageOK) return;
+
+  const key = today();
+  if (!state.days[key]) {
+    state.days[key] = {
+      questions:dailyQuestions(key),
+      answers:[],
+      phase:"question",
+      deadline:Date.now()+25000,
+      finished:false
+    };
+    if (!save()) {
+      delete state.days[key];
+      render();
+      return;
+    }
+  }
+
+  selectedDate = key;
+  navigate(state.days[key].finished ? "result" : "play");
+}
+
+function home() {
+  const key = today();
+  const day = state.days[key];
+  const s = stats();
+
+  const action = !storageOK
+    ? `<p class="notice">Browserspeicher nicht verfügbar.
+       Bitte erlaube ihn und lade die Seite neu.</p>`
+    : `<button class="primary" data-action="start">${
+        day?.finished ? "Heutiges Ergebnis ansehen" :
+        day ? "Runde fortsetzen" : "Heutiges Spiel starten"
+      }</button>`;
+
+  app.innerHTML = `
+    <div class="grid">
+      <section>
+        <p class="eyebrow">Das tägliche Wissensspiel</p>
+        <h1>Seltene Antworten.<br>Große Höhen.</h1>
+        <p class="intro">
+          Fünf Fragen. Je ungewöhnlicher deine richtige Antwort,
+          desto höher steigt dein Ballon.
+        </p>
+        <div class="chips">
+          <span>25 Sekunden pro Frage</span>
+          <span>5 Fragen</span><span>Max. 500 Punkte</span>
+        </div>
         <section class="card">
-          <p class="eyebrow">${escapeHTML(displayDate(key))}</p>
-          <h2>Deine heutige Runde</h2>
+          <p class="eyebrow">${esc(formatDate(key))}</p>
+          <h2>Dein heutiger Aufstieg</h2>
+          <p>Der Timer beginnt beim Start.
+          Nach jeder Frage kannst du dein Ergebnis in Ruhe ansehen.</p>
           ${action}
         </section>
-
         <div class="stats">
-          <div class="stat">
-            <strong>${stats.streak}</strong>
-            <span>Tage in Serie</span>
-          </div>
-          <div class="stat">
-            <strong>${stats.played}</strong>
-            <span>Runden gespielt</span>
-          </div>
-          <div class="stat">
-            <strong>${stats.best}</strong>
-            <span>Persönlicher Rekord</span>
-          </div>
+          <div class="stat"><strong>${s.streak}</strong><span>Tage in Serie</span></div>
+          <div class="stat"><strong>${s.played}</strong><span>Runden</span></div>
+          <div class="stat"><strong>${s.best}</strong><span>Rekord</span></div>
         </div>
-
         <p class="muted">
-          Nächste Tagesrunde in
-          <span class="countdown" data-countdown>–</span>.
+          Die Tagessperre gilt nur in diesem Browser.
+          Löschen von Browserdaten kann sie umgehen.
         </p>
+      </section>
+      ${worldMarkup(day ? total(day) : 0)}
+    </div>`;
+  setWorld(day ? total(day) : 0);
+}
 
-                <p class="notice">
-          Diese erste Version speichert nur in deinem Browser.
-          Globale Rangliste und freiwillige Onlinekonten
-          sind noch nicht verbunden.
-        </p>
-      `;
-    }
+function play() {
+  const key = today();
+  const day = state.days[key];
 
-    function startGame() {
-      if (!storageAvailable) {
-        toast("Bitte aktiviere zuerst den lokalen Browserspeicher.");
-        return;
-      }
+  if (!day) {view="home"; home(); return;}
+  if (day.finished) {selectedDate=key; result(); return;}
+  if (day.phase === "feedback") {feedback(day); return;}
 
-      const key = berlinDate();
+  const index = day.answers.length;
+  const q = day.questions[index];
 
-      if (!state.days[key]) {
-        state.days[key] = {
-          questions: dailyQuestions(key),
-          answers: [],
-          finished: false,
-          expired: false
-        };
-
-        if (!saveState()) {
-          delete state.days[key];
-          render();
-          return;
-        }
-      }
-
-      resultDate = null;
-      changeView(state.days[key].finished ? "result" : "play");
-    }
-
-    function renderPlay() {
-      const key = berlinDate();
-      const day = state.days[key];
-
-      if (!day) {
-        currentView = "home";
-        renderHome();
-        return;
-      }
-
-      if (day.finished) {
-        renderResult(key);
-        return;
-      }
-
-      const index = day.answers.length;
-      const question = day.questions[index];
-
-      app.innerHTML = `
-        <p class="eyebrow">Frage ${index + 1} von 5</p>
-
-        <progress
-          value="${index}"
-          max="5"
-          aria-label="${index} von 5 Antworten abgegeben"
-        ></progress>
-
+  app.innerHTML = `
+    <div class="grid">
+      <section>
+        <div class="time-head">
+          <p class="eyebrow">Frage ${index+1} von 5</p>
+          <span class="timer" id="seconds" role="timer"
+            aria-label="Verbleibende Sekunden">25 s</span>
+        </div>
+        <div class="time-track">
+          <div class="time-fill" id="time-fill"></div>
+        </div>
         <section class="card">
-          <h1 class="question-title">
-            ${escapeHTML(question.text)}
-          </h1>
-
-          <p class="muted">
-            Gib genau eine Antwort ein.
-            Ungewöhnliche richtige Antworten bringen mehr Punkte.
-          </p>
-
+          <h1 class="question">${esc(q.text)}</h1>
           <form id="answer-form">
             <label for="answer">Deine Antwort</label>
-
-            <input
-              id="answer"
-              name="answer"
-              type="text"
-              maxlength="120"
-              autocomplete="off"
-              spellcheck="false"
-            >
-
-            <button class="primary" type="submit">
-              Verbindlich abgeben
-            </button>
-
-            <p class="muted">
-              Leer abgeben = überspringen, 0 Punkte.
-              Deine Antwort kann danach nicht geändert werden.
-            </p>
+            <input id="answer" maxlength="120" autocomplete="off"
+              spellcheck="false">
+            <button class="primary" type="submit">Antwort prüfen</button>
+            <button class="secondary" type="button"
+              data-action="skip">Überspringen</button>
+            <div id="suggestion" aria-live="polite"></div>
           </form>
+          <p class="muted">
+            Richtige Schreibweisen werden direkt abgegeben.
+            Bei einem Korrekturvorschlag entscheidest du.
+            Der Timer läuft dabei weiter.
+          </p>
         </section>
-
         <p class="muted">
-          Deine bisherigen Antworten sind gespeichert.
-          Du kannst die Runde heute später fortsetzen.
+          Groß- und Kleinschreibung sowie ö/oe, ä/ae und ü/ue
+          sind bei hinterlegten Antworten gleichwertig.
         </p>
-      `;
+      </section>
+      ${worldMarkup(total(day))}
+    </div>`;
 
-      document.getElementById("answer-form").addEventListener(
-        "submit",
-        event => submitAnswer(event, key, index)
-      );
+  setWorld(total(day));
 
-      document.getElementById("answer").focus();
-    }
-
-    function submitAnswer(event, expectedDay, expectedIndex) {
+  document.getElementById("answer-form").addEventListener(
+    "submit",event => {
       event.preventDefault();
+      checkAnswer(key,index);
+    }
+  );
 
-      if (busy) return;
+  document.getElementById("answer").addEventListener("input",() => {
+    candidate = null;
+    document.getElementById("suggestion").replaceChildren();
+  });
 
-      if (berlinDate() !== expectedDay) {
-        closeExpired();
-        changeView("home");
-        toast("Ein neuer Spieltag hat begonnen.");
-        return;
-      }
+  document.getElementById("answer").focus();
 
-      const latest = readState();
-
-      if (!storageAvailable) {
-        toast("Der Speicher ist nicht verfügbar.");
-        return;
-      }
-
-      state = latest;
-
-      const day = state.days[expectedDay];
-
-      if (
-        !day ||
-        day.finished ||
-        day.answers.length !== expectedIndex
-      ) {
-        render();
-        toast("Der Spielstand wurde in einem anderen Tab geändert.");
-        return;
-      }
-
-      const input = document.getElementById("answer");
-      const raw = input.value.trim().slice(0, 120);
-
-      if (
-        !raw &&
-        !window.confirm("Diese Frage ohne Antwort überspringen?")
-      ) {
-        input.focus();
-        return;
-      }
-
-      busy = true;
-
-      const question = day.questions[expectedIndex];
-      const response = scoreAnswer(question, raw);
-
-      day.answers.push(response);
-      day.finished = day.answers.length === 5;
-
-      const success = saveState();
-
-      busy = false;
-
-      if (!success) {
-        day.answers.pop();
-        day.finished = false;
-        return;
-      }
-
-      resultDate = expectedDay;
-      changeView(day.finished ? "result" : "play");
+  const tick = () => {
+    if (today() !== key) {
+      expireOldDays();
+      navigate("home");
+      toast("Ein neuer Spieltag hat begonnen.");
+      return;
     }
 
-    let resultDate = null;
+    const remaining = Math.max(0,day.deadline-Date.now());
+    const seconds = Math.ceil(remaining/1000);
+    const label = document.getElementById("seconds");
+    const bar = document.getElementById("time-fill");
+    if (!label || !bar) return;
 
-    function renderResult(key = resultDate || berlinDate()) {
-      const day = state.days[key];
+    label.textContent = seconds+" s";
+    label.classList.toggle("urgent",seconds<=5);
+    bar.classList.toggle("urgent",seconds<=5);
+    bar.style.width = Math.min(100,remaining/25000*100)+"%";
 
-      if (!day || !day.finished) {
-        currentView = "home";
-        renderHome();
-        return;
-      }
+    if (remaining <= 0) {
+      commitAnswer(key,index,"",null,"timeout");
+    }
+  };
 
-      resultDate = key;
+  tick();
+  if (view === "play" && day.phase === "question") {
+    timer = setInterval(tick,100);
+  }
+}
 
-      const total = totalScore(day);
+function checkAnswer(key,index) {
+  const day = state.days[key];
+  if (!day || day.phase !== "question") return;
 
-      const correct = day.answers.filter(
-        answer => Boolean(answer.canonical)
-      ).length;
+  if (Date.now() >= day.deadline) {
+    commitAnswer(key,index,"",null,"timeout");
+    return;
+  }
 
-      let headline = "Jede Runde macht dich erfahrener.";
+  const raw = document.getElementById("answer").value.trim();
+  const q = day.questions[index];
 
-      if (total >= 400) {
-        headline = "Ein außergewöhnlich seltenes Ergebnis.";
-      } else if (total >= 300) {
-        headline = "Du denkst abseits der üblichen Antworten.";
-      } else if (total >= 200) {
-        headline = "Einige richtig gute Fundstücke.";
-      } else if (total >= 100) {
-        headline = "Solider Start. Morgen geht noch mehr.";
-      }
+  if (!raw) {
+    commitAnswer(key,index,"",null,"skip");
+    return;
+  }
 
-      const rows = day.questions.map((question, index) => {
-        const answer = day.answers[index] || {
-          raw: "",
-          canonical: "",
-          points: 0
-        };
+  const exact = exactAnswer(q,raw);
+  if (exact) {
+    commitAnswer(key,index,raw,exact,"answer");
+    return;
+  }
 
-        const level = answer.canonical
-          ? LEVELS[answer.points]
-          : answer.raw
-            ? "Nicht erkannt"
-            : "Übersprungen";
+  const suggestion = similarAnswer(q,raw);
 
-        return `
-          <article class="result-row">
-            <p class="eyebrow">Frage ${index + 1}</p>
-
-            <h3>${escapeHTML(question.text)}</h3>
-
-            <p>
-              Deine Antwort:
-              <strong>
-                ${escapeHTML(answer.raw || "Übersprungen")}
-              </strong>
-            </p>
-
-            <span class="badge ${answer.canonical ? "" : "invalid"}">
-              ${answer.points} Punkte · ${escapeHTML(level)}
-            </span>
-
-            ${
-              answer.canonical
-                ? `<p class="muted">
-                    Gewertet als: ${escapeHTML(answer.canonical)}
-                   </p>`
-                : ""
-            }
-          </article>
-        `;
-      }).join("");
-
-      app.innerHTML = `
-        <p class="eyebrow">
-          Dein Ergebnis · ${escapeHTML(displayDate(key))}
-        </p>
-
-        <div class="score">
-          ${total}<small> / 500</small>
-        </div>
-
-        <h2>${escapeHTML(headline)}</h2>
-
-        <p>${correct} von 5 Fragen richtig beantwortet.</p>
-
-        ${
-          day.expired
-            ? `<p class="notice">
-                Die Runde endete am Tageswechsel.
-                Fehlende Antworten zählen als 0 Punkte.
-               </p>`
-            : ""
-        }
-
-        <button class="primary" data-action="share">
-          Ergebnis kopieren
+  if (suggestion) {
+    candidate = {key,index,raw,answer:suggestion};
+    document.getElementById("suggestion").innerHTML = `
+      <div class="suggestion">
+        <p>Meinst du <strong>${esc(suggestion[0])}</strong>?</p>
+        <button type="button" class="primary" data-action="accept">
+          Korrigiert abgeben
         </button>
-
-        <button class="secondary" data-view="stats">
-          Meine Statistik
+        <button type="button" class="secondary" data-action="original">
+          Original abgeben
         </button>
+        <p class="muted">Die 25 Sekunden laufen weiter.</p>
+      </div>`;
+    return;
+  }
 
-        <section class="card">
-          ${rows}
-        </section>
+  commitAnswer(key,index,raw,null,"answer");
+}
 
-        <section class="card">
-          <h2>Vergleich mit anderen</h2>
-          <p>
-            Noch nicht verfügbar: Diese Ein-Datei-Version
-            hat keine gemeinsame Spielerdatenbank.
-          </p>
-          <p class="muted">
-            Es werden keine Teilnehmerzahlen,
-            Antwortquoten oder Rangplätze erfunden.
-          </p>
-        </section>
+function commitAnswer(key,index,raw,answer,reason) {
+  if (locked) return;
+  locked = true;
+  clearTimers();
 
-        <p class="muted">
-          Neue Runde in
-          <span class="countdown" data-countdown>–</span>.
-        </p>
-      `;
-    }
+  const fresh = load();
 
-    function renderStats() {
-      const stats = calculateStats();
-      const entries = completedEntries();
-
-      const rows = entries.map(([key, day]) => `
-        <tr>
-          <td>${escapeHTML(displayDate(key))}</td>
-          <td>${totalScore(day)} / 500</td>
-          <td>
-            <button
-              class="nav-button"
-              data-result="${escapeHTML(key)}"
-            >
-              Ansehen
-            </button>
-          </td>
-        </tr>
-      `).join("");
-
-      app.innerHTML = `
-        <p class="eyebrow">Nur in diesem Browser</p>
-        <h1>Deine Statistik.</h1>
-
-        <div class="stats">
-          <div class="stat">
-            <strong>${stats.streak}</strong>
-            <span>Tage in Serie</span>
-          </div>
-          <div class="stat">
-            <strong>${stats.best}</strong>
-            <span>Beste Punktzahl</span>
-          </div>
-          <div class="stat">
-            <strong>${stats.average}</strong>
-            <span>Durchschnitt</span>
-          </div>
-        </div>
-
-        <section class="card">
-          <h2>Vergangene Runden</h2>
-
-          ${
-            entries.length
-              ? `<table>
-                  <thead>
-                    <tr>
-                      <th>Datum</th>
-                      <th>Punkte</th>
-                      <th>Ergebnis</th>
-                    </tr>
-                  </thead>
-                  <tbody>${rows}</tbody>
-                 </table>`
-              : "<p>Du hast noch keine Tagesrunde abgeschlossen.</p>"
-          }
-        </section>
-
-        <p class="muted">
-          Eine Serie zählt aufeinanderfolgende Tage mit einer
-          abgeschlossenen Runde. Auch 0 Punkte zählen.
-          Ein angefangener Versuch wird nach Tagesende abgeschlossen.
-        </p>
-
-        <section class="card">
-          <h2>Freiwilliges Onlinekonto</h2>
-          <p>
-            In dieser Version noch nicht verfügbar.
-            Deine Statistik wird automatisch lokal gespeichert.
-          </p>
-          <p class="muted">
-            Geräteübergreifende Konten benötigen einen
-            zusätzlich angebundenen Server oder Datenbankdienst.
-          </p>
-        </section>
-      `;
-    }
-
-    function renderRules() {
-      app.innerHTML = `
-        <p class="eyebrow">Kurz erklärt</p>
-        <h1>So spielst du.</h1>
-
-        <section class="card">
-          <h2>Fünf Fragen pro Tag</h2>
-          <p>
-            Alle Spieler erhalten für dasselbe Berliner Datum
-            dieselben fünf Fragen. Pro Frage zählt eine Antwort.
-          </p>
-
-          <h2>Richtig und ungewöhnlich</h2>
-          <p>
-            Richtige Antworten erhalten vorab festgelegte Punkte:
-          </p>
-
-          <table>
-            <tbody>
-              <tr><td>Häufig</td><td>10 Punkte</td></tr>
-              <tr><td>Bekannt</td><td>25 Punkte</td></tr>
-              <tr><td>Ungewöhnlich</td><td>50 Punkte</td></tr>
-              <tr><td>Selten</td><td>75 Punkte</td></tr>
-              <tr><td>Sehr selten</td><td>100 Punkte</td></tr>
-              <tr><td>Nicht erkannt oder leer</td><td>0 Punkte</td></tr>
-            </tbody>
-          </table>
-
-          <p class="muted">
-            Die Seltenheitsstufen sind redaktionelle Einschätzungen,
-            keine gemessenen Antwortquoten anderer Spieler.
-            Nicht jede Frage enthält jede Punktestufe.
-          </p>
-
-          <h2>Eine Abgabe ist endgültig</h2>
-          <p>
-            Du kannst abgegebene Antworten nicht ändern.
-            Es gibt kein Zeitlimit.
-            Eine leere Antwort überspringt die Frage.
-          </p>
-
-          <h2>Neuer Tag, neue Runde</h2>
-          <p>
-            Der Tageswechsel erfolgt um 00:00 Uhr in Europe/Berlin.
-            Fehlende Antworten einer angefangenen Runde
-            zählen anschließend als 0 Punkte.
-          </p>
-
-          <h2>Keine Pflichtanmeldung</h2>
-          <p>
-            Dein Spielstand bleibt in diesem Browser gespeichert.
-            Gelöschte Browserdaten oder andere Geräte
-            haben keinen Zugriff auf diesen Spielstand.
-          </p>
-        </section>
-
-        <details class="card">
-          <summary>Grenzen dieses Prototyps</summary>
-
-          <p>
-            Die Tagessperre basiert auf lokalem Browserspeicher
-            und ist nicht manipulationssicher.
-          </p>
-
-          <p>
-            Antworten stehen im Quellcode. Diese Version ist
-            nicht für einen manipulationssicheren Wettbewerb geeignet.
-          </p>
-
-          <p>
-            Der begrenzte Fragenpool führt zu wiederkehrenden Fragen.
-            Akzeptierte Schreibvarianten sind nicht vollständig.
-            Inhalte und Punkte sind vor einem öffentlichen
-            Spielbetrieb redaktionell zu prüfen.
-          </p>
-
-          <p>
-            Es gibt keine gemeinsame Datenbank,
-            echte Onlinekonten oder globale Rangliste.
-          </p>
-        </details>
-      `;
-    }
-
-    function render() {
-      closeExpired();
-
-      if (currentView === "play") {
-        renderPlay();
-      } else if (currentView === "result") {
-        renderResult();
-      } else if (currentView === "stats") {
-        renderStats();
-      } else if (currentView === "rules") {
-        renderRules();
-      } else {
-        renderHome();
-      }
-
-      updateCountdown();
-    }
-
-    async function shareResult() {
-      const key = resultDate || berlinDate();
-      const day = state.days[key];
-
-      if (!day || !day.finished) return;
-
-      const points = day.questions.map((question, index) => {
-        const answer = day.answers[index];
-        return answer ? answer.points : 0;
-      });
-
-      const text = [
-        `Selten · ${displayDate(key)}`,
-        `${totalScore(day)}/500 Punkte`,
-        points.join(" · "),
-        "Fünf Fragen. Seltene Antworten."
-      ].join("\n");
-
-      try {
-        await navigator.clipboard.writeText(text);
-        toast("Ergebnis kopiert.");
-      } catch (error) {
-        window.prompt("Kopiere dein Ergebnis:", text);
-      }
-    }
-
-    function millisecondsToNextDay() {
-      const now = Date.now();
-      const current = berlinDate(new Date(now));
-
-      let low = now;
-      let high = now + 27 * 60 * 60 * 1000;
-
-      while (high - low > 1000) {
-        const middle = Math.floor((low + high) / 2);
-
-        if (berlinDate(new Date(middle)) === current) {
-          low = middle;
-        } else {
-          high = middle;
-        }
-      }
-
-      return Math.max(0, high - now);
-    }
-
-    function updateCountdown() {
-      const elements = document.querySelectorAll("[data-countdown]");
-
-      if (!elements.length) return;
-
-      const seconds = Math.floor(millisecondsToNextDay() / 1000);
-      const hours = Math.floor(seconds / 3600);
-      const minutes = Math.floor((seconds % 3600) / 60);
-      const rest = seconds % 60;
-
-      const text = [hours, minutes, rest]
-        .map(value => String(value).padStart(2, "0"))
-        .join(":");
-
-      elements.forEach(element => {
-        element.textContent = text;
-      });
-    }
-
-    document.addEventListener("click", event => {
-      const viewButton = event.target.closest("[data-view]");
-
-      if (viewButton) {
-        changeView(viewButton.dataset.view);
-        return;
-      }
-
-      const resultButton = event.target.closest("[data-result]");
-
-      if (resultButton) {
-        resultDate = resultButton.dataset.result;
-        changeView("result");
-        return;
-      }
-
-      const actionButton = event.target.closest("[data-action]");
-
-      if (!actionButton) return;
-
-      const action = actionButton.dataset.action;
-
-      if (action === "start" || action === "continue") {
-        startGame();
-      } else if (action === "today-result") {
-        resultDate = berlinDate();
-        changeView("result");
-      } else if (action === "share") {
-        shareResult();
-      }
-    });
-
-    window.addEventListener("storage", event => {
-      if (event.key === STORAGE_KEY) {
-        state = readState();
-        render();
-      }
-    });
-
-    let lastDate = berlinDate();
-
-    setInterval(() => {
-      const date = berlinDate();
-
-      if (date !== lastDate) {
-        lastDate = date;
-        closeExpired();
-
-        if (currentView === "play") {
-          currentView = "home";
-        }
-
-        render();
-        toast("Ein neuer Spieltag hat begonnen.");
-      } else {
-        updateCountdown();
-      }
-    }, 1000);
-
+  if (!storageOK) {
+    locked = false;
     render();
-  </script>
+    return;
+  }
+
+  state = fresh;
+  const day = state.days[key];
+
+  if (!day || day.finished || day.phase !== "question" ||
+      day.answers.length !== index) {
+    locked = false;
+    render();
+    return;
+  }
+
+  if (today() !== key) {
+    expireOldDays();
+    locked = false;
+    navigate("home");
+    return;
+  }
+
+  if (Date.now() >= day.deadline) {
+    raw = "";
+    answer = null;
+    reason = "timeout";
+  }
+
+  const before = total(day);
+
+  day.answers.push({
+    raw,
+    canonical:answer ? answer[0] : "",
+    points:answer ? answer[1] : 0,
+    reason
+  });
+
+  day.phase = "feedback";
+  day.deadline = null;
+
+  if (!save()) {
+    state = fresh;
+    locked = false;
+    render();
+    return;
+  }
+
+  candidate = null;
+  locked = false;
+  view = "play";
+  feedback(day,before);
+}
+
+function feedback(day,from = total(day)) {
+  const index = day.answers.length-1;
+  const answer = day.answers[index];
+  const q = day.questions[index];
+  const height = total(day);
+
+  const title = answer.reason === "timeout" ? "Die Zeit ist abgelaufen." :
+    answer.canonical ? "Deine Antwort ist richtig." :
+    answer.reason === "skip" ? "Frage übersprungen." :
+    "Diese Antwort wurde nicht erkannt.";
+
+  const next = day.answers.length === 5
+    ? "Gesamtergebnis ansehen"
+    : "Nächste Frage starten · 25 s";
+
+  app.innerHTML = `
+    <div class="grid">
+      <section>
+        <p class="eyebrow">Auswertung · Frage ${index+1} von 5</p>
+        <section class="card">
+          <h2>${esc(title)}</h2>
+          <p>${esc(q.text)}</p>
+          <p>Deine Antwort:
+            <strong>${esc(answer.raw || "Leer")}</strong>
+          </p>
+          ${answer.canonical ?
+            `<p class="muted">Gewertet als: ${esc(answer.canonical)}</p>` : ""}
+          <div class="points">+${answer.points}<small> Punkte</small></div>
+          <span class="badge ${answer.points ? "" : "zero"}">
+            ${esc(LEVELS[answer.points])}
+          </span>
+          <p>
+            ${answer.points
+              ? `Du steigst um ${answer.points} Meter auf.`
+              : "Dein Ballon bleibt auf der bisherigen Höhe."}
+          </p>
+          <p class="muted">
+            Bisher ${height} von 500 Punkten.
+            Die Seltenheitsstufe ist redaktionell festgelegt.
+          </p>
+          <button class="primary" data-action="next">${next}</button>
+          <p class="muted">
+            Hier läuft kein Timer.
+            Die nächste Frage beginnt erst mit deinem Klick.
+          </p>
+        </section>
+      </section>
+      ${worldMarkup(from)}
+    </div>`;
+
+  animateWorld(from,height);
+}
+
+function nextQuestion() {
+  state = load();
+  const key = today();
+  const day = state.days[key];
+
+  if (!day || day.phase !== "feedback") {
+    render();
+    return;
+  }
+
+  if (day.answers.length === 5) {
+    day.finished = true;
+    day.phase = "done";
+    selectedDate = key;
+    if (save()) navigate("result");
+  } else {
+    day.phase = "question";
+    day.deadline = Date.now()+25000;
+    if (save()) navigate("play");
+  }
+}
+
+function result() {
+  const key = selectedDate || today();
+  const day = state.days[key];
+  if (!day?.finished) {view="home"; home(); return;}
+
+  const rows = day.questions.map((q,i) => {
+    const answer = day.answers[i];
+    return `
+      <article class="result-row">
+        <p class="eyebrow">Frage ${i+1}</p>
+        <h3>${esc(q.text)}</h3>
+        <p>${esc(answer.raw || "Leer")} · ${answer.points} Punkte</p>
+        <span class="badge ${answer.points ? "" : "zero"}">
+          ${answer.reason === "timeout" ? "Zeit abgelaufen" :
+            answer.reason === "day-end" ? "Spieltag beendet" :
+            esc(LEVELS[answer.points])}
+        </span>
+      </article>`;
+  }).join("");
+
+  app.innerHTML = `
+    <div class="grid">
+      <section>
+        <p class="eyebrow">${esc(formatDate(key))}</p>
+        <h1>Dein Aufstieg.</h1>
+        <div class="points">${total(day)}<small> / 500 Punkte</small></div>
+        <p>Du hast ${total(day)} Meter erreicht.</p>
+        <button class="primary" data-action="share">Ergebnis kopieren</button>
+        <button class="secondary" data-view="stats">Meine Statistik</button>
+        <section class="card">${rows}</section>
+        <p class="notice">
+          Ein echter Vergleich mit anderen Spielern benötigt
+          eine gemeinsame Datenbank. In dieser Version ist er
+          noch nicht verfügbar.
+        </p>
+      </section>
+      ${worldMarkup(total(day))}
+    </div>`;
+  setWorld(total(day));
+}
+
+function statistics() {
+  const s = stats();
+  app.innerHTML = `
+    <p class="eyebrow">Nur in diesem Browser</p>
+    <h1>Deine Statistik.</h1>
+    <div class="stats">
+      <div class="stat"><strong>${s.streak}</strong><span>Tage in Serie</span></div>
+      <div class="stat"><strong>${s.best}</strong><span>Rekord</span></div>
+      <div class="stat"><strong>${s.average}</strong><span>Durchschnitt</span></div>
+    </div>
+    <section class="card">
+      <h2>Vergangene Aufstiege</h2>
+      ${completed().map(([key,day]) => `
+        <div class="result-row">
+          <p>${esc(formatDate(key))} · ${total(day)} Punkte</p>
+          <button class="secondary" data-result="${key}">Ansehen</button>
+        </div>`).join("") || "<p>Noch keine abgeschlossene Tagesrunde.</p>"}
+    </section>
+    <p class="muted">
+      Ein freiwilliges Onlinekonto ist noch nicht verbunden.
+      Browserdaten löschen entfernt auch deine lokale Statistik.
+    </p>`;
+}
+
+function rules() {
+  app.innerHTML = `
+    <p class="eyebrow">So funktioniert es</p>
+    <h1>Fünf Fragen.<br>Hoch hinaus.</h1>
+    <section class="card">
+      <h2>25 Sekunden pro Frage</h2>
+      <p>
+        Die erste Frage beginnt beim Start der Runde.
+        Weitere Fragen beginnen mit „Nächste Frage starten“.
+        Der Timer läuft auch beim Wechseln des Tabs oder Neuladen weiter.
+        Zeitablauf bedeutet leere Antwort und 0 Punkte.
+      </p>
+      <h2>Sofortiges Ergebnis</h2>
+      <p>
+        Nach jeder Abgabe erhältst du deine Wertung.
+        Du kannst sie ohne Zeitdruck ansehen.
+        Jede abgegebene Antwort ist endgültig.
+      </p>
+      <h2>Seltene Antworten steigen höher</h2>
+      <p>
+        Häufig: 10, bekannt: 25, ungewöhnlich: 50,
+        selten: 75, sehr selten: 100 Punkte.
+        Ein Punkt entspricht einem Meter Aufstieg.
+      </p>
+      <p class="muted">
+        Die Stufen sind redaktionell geschätzt, nicht aus echten
+        Spielerantworten berechnet. Nicht jede Frage enthält jede Stufe.
+      </p>
+      <h2>Schreibweisen und Korrektur</h2>
+      <p>
+        Groß- und Kleinschreibung, überflüssige Leerzeichen sowie
+        Umlaute und ihre ae/oe/ue-Schreibweisen werden normalisiert.
+        Hinterlegte Synonyme werden ebenfalls akzeptiert.
+      </p>
+      <p>
+        Für nahe Schreibweisen gibt es einen bestätigungspflichtigen
+        Vorschlag. Sehr kurze und mehrdeutige Eingaben werden nicht
+        automatisch verbessert. Der Timer pausiert dabei nicht.
+      </p>
+      <h2>Jeden Tag eine Runde</h2>
+      <p>
+        Tageswechsel ist um Mitternacht in Europe/Berlin.
+        Alle erhalten für dasselbe Datum dieselben Fragen.
+        Fehlende Antworten angefangener alter Runden zählen als 0.
+      </p>
+      <p>
+        Eine Serie zählt aufeinanderfolgende abgeschlossene
+        Tagesversuche, auch mit 0 Punkten.
+      </p>
+    </section>
+    <details class="card">
+      <summary>Technische Grenzen</summary>
+      <p>
+        Dieser lokale Prototyp ist nicht manipulationssicher.
+        Browserdaten, Uhrzeit und Quellcode lassen sich verändern.
+        Auch mehrere Tabs sind keine verlässliche Teilnahmesperre.
+      </p>
+      <p>
+        Es gibt keine globale Rangliste oder echten Onlinekonten.
+        Der kleine Fragenpool wiederholt sich.
+        Antwortlisten und Korrekturvorschläge können unvollständig sein.
+      </p>
+    </details>`;
+}
+
+function render() {
+  clearTimers();
+  expireOldDays();
+
+  if (view === "play") play();
+  else if (view === "result") result();
+  else if (view === "stats") statistics();
+  else if (view === "rules") rules();
+  else home();
+
+  /*
+    Wenn eine Frage läuft, muss ihr Ablauf auch auf einer anderen
+    Ansicht berücksichtigt werden. Die Frist selbst bleibt gespeichert.
+  */
+  if (view !== "play") {
+    timer = setInterval(checkBackgroundDeadline,250);
+  }
+}
+
+function checkBackgroundDeadline() {
+  const day = state.days[today()];
+  if (day && !day.finished && day.phase === "question" &&
+      Date.now() >= day.deadline) {
+    commitAnswer(today(),day.answers.length,"",null,"timeout");
+  }
+}
+
+async function share() {
+  const key = selectedDate || today();
+  const day = state.days[key];
+  if (!day?.finished) return;
+
+  const text = [
+    "Gazillion · "+formatDate(key),
+    total(day)+"/500 Punkte · "+total(day)+" Meter",
+    day.answers.map(a => a.points).join(" · ")
+  ].join("\n");
+
+  try {
+    await navigator.clipboard.writeText(text);
+    toast("Ergebnis kopiert.");
+  } catch (error) {
+    window.prompt("Ergebnis kopieren:",text);
+  }
+}
+
+document.addEventListener("click",event => {
+  const viewButton = event.target.closest("[data-view]");
+  if (viewButton) {
+    navigate(viewButton.dataset.view);
+    return;
+  }
+
+  const resultButton = event.target.closest("[data-result]");
+  if (resultButton) {
+    selectedDate = resultButton.dataset.result;
+    navigate("result");
+    return;
+  }
+
+  const button = event.target.closest("[data-action]");
+  if (!button) return;
+  const action = button.dataset.action;
+
+  if (action === "start") start();
+  else if (action === "next") nextQuestion();
+  else if (action === "share") share();
+  else if (action === "skip") {
+    const key = today();
+    const day = state.days[key];
+    if (day) commitAnswer(key,day.answers.length,"",null,"skip");
+  } else if (action === "accept" && candidate) {
+    const c = candidate;
+    commitAnswer(c.key,c.index,c.answer[0],c.answer,"corrected");
+  } else if (action === "original" && candidate) {
+    const c = candidate;
+    commitAnswer(c.key,c.index,c.raw,null,"answer");
+  }
+});
+
+window.addEventListener("storage",event => {
+  if (event.key === KEY) {
+    state = load();
+    candidate = null;
+    render();
+  }
+});
+
+document.addEventListener("visibilitychange",() => {
+  if (!document.hidden) {
+    state = load();
+    render();
+  }
+});
+
+window.addEventListener("resize",() => {
+  const day = state.days[
+    view === "result" ? selectedDate || today() : today()
+  ];
+  setWorld(day ? total(day) : 0);
+});
+
+let lastDay = today();
+setInterval(() => {
+  const key = today();
+  if (key !== lastDay) {
+    lastDay = key;
+    expireOldDays();
+    if (view === "play") view = "home";
+    render();
+    toast("Ein neuer Spieltag hat begonnen.");
+  }
+},1000);
+
+render();
+</script>
 </body>
 </html>
